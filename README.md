@@ -4,7 +4,7 @@ Using 'technical Analsys' - Identify if a given stock is good choice for short t
 
 Input  Stock ticker
        time Frame (in days)
-Output: 
+Output: <br>
    Boolean: Yes/No
    Target ranges (Up by x/ down by y)
    Given timeframe (in days)
@@ -18,7 +18,8 @@ Application
          Stock name and Symbol
          Current/last updated price
   2.) Use API to pull stock info
-          Optiomns: yahoo finance API
+          Options: yahoo finance API<br>
+          https://www.alphavantage.co/documentation/ <br>
   3.) Run Technical Analysys against the history to identify if good time for stock trade
          
   Should have:
