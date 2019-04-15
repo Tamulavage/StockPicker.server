@@ -1,4 +1,7 @@
 package com.zipcode.stockpicker.repository;
 
-public interface StockHistoryRepository {
+import com.zipcode.stockpicker.model.StockHistory;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface StockHistoryRepository extends JpaRepository<StockHistory, Integer> {
 }
