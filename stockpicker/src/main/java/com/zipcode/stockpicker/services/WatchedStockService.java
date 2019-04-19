@@ -7,6 +7,8 @@ import com.zipcode.stockpicker.repository.WatchedStockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class WatchedStockService {
     private WatchedStockRepository repository;
@@ -20,10 +22,16 @@ public class WatchedStockService {
 
     public WatchedStock watchNewStock(WatchedStock watchedStock) {
         StockSymbol stockSymbol = watchedStock.getStockSymbol();
-        StockSymbol existingStock = stockSymbolRepository.findBySymbol(stockSymbol.getSymbol());
-        if (existingStock != null) {
-            watchedStock.setStockSymbol(existingStock);
+        watchedStock.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
+        return repository.save(watchedStock);
+    }
+
+    public WatchedStock stopWatchingStock(Integer id) {
+        WatchedStock watchedStock = repository.getOne(id);
+        if(watchedStock == null){
+            throw new IllegalArgumentException("Stock was not watched");
         }
+        watchedStock.setEndWatch(LocalDate.now());
         return repository.save(watchedStock);
     }
 }

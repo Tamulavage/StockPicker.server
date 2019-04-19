@@ -39,7 +39,8 @@ public class StockHistory {
 
     public StockHistory() {}
 
-    public StockHistory(Double openAmount, Double closeAmount, Double highAmount, Double lowAmount, Integer volume, Integer timeFrameUnit, String timeFrameType, StockSymbol stockSymbol) {
+    public StockHistory(Double openAmount, Double closeAmount, Double highAmount, Double lowAmount, Integer volume,
+                        Integer timeFrameUnit, String timeFrameType, StockSymbol stockSymbol) {
         this.openAmount = openAmount;
         this.closeAmount = closeAmount;
         this.highAmount = highAmount;

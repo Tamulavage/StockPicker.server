@@ -1,23 +1,71 @@
 package com.zipcode.stockpicker.services;
 
+import com.zipcode.stockpicker.model.StockHistory;
 import com.zipcode.stockpicker.model.StockSymbol;
 import com.zipcode.stockpicker.model.WatchedStock;
+import com.zipcode.stockpicker.repository.StockHistoryRepository;
+import com.zipcode.stockpicker.repository.StockSymbolRepository;
+import com.zipcode.stockpicker.repository.WatchedStockRepository;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.junit.Assert.*;
+import java.time.LocalDate;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class WatchedStockServiceTest {
 
-    @Test
-    public void testWatchStockService(){
-        StockSymbol stockSymbol = new StockSymbol("ACN");
-       // WatchedStock watchedStock = new WatchedStock(null, null, stockSymbol);
-   //     WatchedStock watchedStock = new WatchedStock(null, null, "test");
+    @MockBean
+    private WatchedStockRepository watchedStockRepository;
 
+    @MockBean
+    private StockSymbolRepository symbolRepository;
 
-//        WatchedStockService watchedStockService = new WatchedStockService();
-//        watchedStockService.watchNewStock(watchedStock);
+    @Autowired
+    private WatchedStockService watchedStockService;
+
+    @Before
+    public void setup(){
+        this.watchedStockRepository = mock(WatchedStockRepository.class);
+        this.symbolRepository = mock(StockSymbolRepository.class);
+        this.watchedStockService = new WatchedStockService( watchedStockRepository, symbolRepository);
 
     }
+
+    @Test
+    public void testAddWatchStock(){
+        String symbol = "test";
+        StockSymbol stockSymbol = new StockSymbol(1, symbol);
+        WatchedStock watchedStock = new WatchedStock( null, null, stockSymbol );
+        WatchedStock watchedStockExpected = new WatchedStock(null, null, stockSymbol );
+
+        when(symbolRepository.findBySymbol(symbol)).thenReturn(stockSymbol);
+        when(watchedStockRepository.save(watchedStock)).thenReturn(watchedStockExpected);
+
+        WatchedStock actual = watchedStockService.watchNewStock(watchedStock);
+
+        Assert.assertEquals(watchedStockExpected,actual );
+
+    }
+
+    @Test
+    public void testEndWatchStock(){
+        String symbol = "test";
+        StockSymbol stockSymbol = new StockSymbol(1, symbol);
+        WatchedStock watchedStock = new WatchedStock( null, null, stockSymbol );
+        WatchedStock watchedStockExpected = new WatchedStock(null, LocalDate.now(), stockSymbol );
+
+        when(watchedStockRepository.getOne(watchedStock.getId())).thenReturn(watchedStock);
+        when(watchedStockRepository.save(watchedStock)).thenReturn(watchedStockExpected);
+
+        WatchedStock actual = watchedStockService.stopWatchingStock(watchedStock.getId());
+
+        Assert.assertEquals(watchedStockExpected,actual );
+    }
+
 
 }
