@@ -9,23 +9,29 @@ public class StockSymbol {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private Integer Id;
+    private Integer id;
 
-    @Column(name="Symbol")
+    @Column(name = "Symbol")
     private String symbol;
 
-    public StockSymbol() {}
+    public StockSymbol() {
+    }
 
     public StockSymbol(String symbol) {
         this.symbol = symbol;
     }
 
+    public StockSymbol(Integer id, String symbol) {
+        this.id = id;
+        this.symbol = symbol;
+    }
+
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Integer id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getSymbol() {

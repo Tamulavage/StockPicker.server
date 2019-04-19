@@ -21,10 +21,7 @@ public class StockHistoryService {
 
     public StockHistory addStockHistory(StockHistory stockHistory) {
         StockSymbol stockSymbol = stockHistory.getStockSymbol();
-        StockSymbol existingStock = stockSymbolRepository.findBySymbol(stockSymbol.getSymbol());
-        if (existingStock != null) {
-            stockHistory.setStockSymbol(existingStock);
-        }
+        stockHistory.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
         return stockHistoryRepository.save(stockHistory);
     }
 }
