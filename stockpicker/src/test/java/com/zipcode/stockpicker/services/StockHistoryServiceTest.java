@@ -33,7 +33,7 @@ public class StockHistoryServiceTest {
     }
 
     @Test
-    public void testAddWatchStock(){
+    public void testAddStockHistory(){
         String symbol = "test";
         StockSymbol stockSymbol = new StockSymbol(1, symbol);
         StockHistory stockHistory = new StockHistory(0.1, 0.1, 0.1,
