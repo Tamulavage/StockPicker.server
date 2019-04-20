@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class WatchedStockService {
@@ -33,5 +34,9 @@ public class WatchedStockService {
         }
         watchedStock.setEndWatch(LocalDate.now());
         return repository.save(watchedStock);
+    }
+
+    public List<WatchedStock> getWatchedStocks() {
+        return repository.findAll();
     }
 }
