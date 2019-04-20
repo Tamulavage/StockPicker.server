@@ -22,4 +22,9 @@ public class WatchedStockController {
     public ResponseEntity<WatchedStock> addWatchedStock(@RequestBody WatchedStock watchedStock){
         return new ResponseEntity<>(watchedStockService.watchNewStock(watchedStock), HttpStatus.CREATED);
     }
+
+    @GetMapping("/")
+    public ResponseEntity<Iterable<WatchedStock>> getWatchedStock(){
+        return new ResponseEntity<>(watchedStockService.getWatchedStocks(), HttpStatus.OK);
+    }
 }
