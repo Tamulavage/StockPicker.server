@@ -1,11 +1,11 @@
-#
+# mysql -u root -p < create_db.sql
 
 DROP DATABASE if exists stocks;
 CREATE DATABASE stocks;
 
 USE stocks;
 
-CREATE TABLE user
+CREATE TABLE user_profiles
 (
   user_id    INTEGER     NOT NULL auto_increment,
   first_name varchar(50) NOT NULL,
@@ -19,7 +19,8 @@ CREATE TABLE account
   id      INTEGER NOT NULL auto_increment,
   balance double,
   user_id INTEGER,
-  CONSTRAINT pk_account PRIMARY KEY (id)
+  CONSTRAINT pk_account PRIMARY KEY (id),
+  CONSTRAINT fk_account_profiles FOREIGN KEY (user_id) REFERENCES user_profiles (user_id)
 );
 
 CREATE TABLE stock_symbol
@@ -32,11 +33,13 @@ CREATE TABLE stock_symbol
 CREATE TABLE watched_stocks
 (
   id              INTEGER NOT NULL auto_increment,
+  user_id         integer,
   stock_symbol_id integer,
   start_watch     date,
   end_watch       date,
   CONSTRAINT pk_watched_stocks PRIMARY KEY (id),
-  CONSTRAINT fk_watched_stock FOREIGN KEY (stock_symbol_id) REFERENCES stock_symbol (id)
+  CONSTRAINT fk_watched_stock_sym FOREIGN KEY (stock_symbol_id) REFERENCES stock_symbol (id),
+  CONSTRAINT fk_watched_stock_prof FOREIGN KEY (user_id) REFERENCES user_profiles (user_id)
 );
 
 CREATE TABLE stock_history
@@ -51,11 +54,11 @@ CREATE TABLE stock_history
   time_frame_unit INTEGER,
   time_frame_Type varchar(10),
   CONSTRAINT pk_stock_history PRIMARY KEY (id),
-  CONSTRAINT fk_watched_stock FOREIGN KEY (stock_symbol_id) REFERENCES stock_symbol (id)
+  CONSTRAINT fk_stock_history_sym FOREIGN KEY (stock_symbol_id) REFERENCES stock_symbol (id)
 );
 
 
-CREATE TABLE current_stocks
+CREATE TABLE stock_transaction
 (
   id              INTEGER NOT NULL auto_increment,
   stock_symbol_id integer,
@@ -66,3 +69,13 @@ CREATE TABLE current_stocks
   qty             INTEGER,
   CONSTRAINT pk_current_stocks PRIMARY KEY (id)
 );
+
+CREATE TABLE stocks_users_XREF
+(
+  id      INTEGER NOT NULL auto_increment,
+  user_id INTEGER NOT NULL,
+  stock_id INTEGER NOT NULL,
+  CONSTRAINT pk_stocks_users_XREF PRIMARY KEY (id),
+  CONSTRAINT fk_stocks_users_user FOREIGN KEY (user_id) REFERENCES user_profiles (user_id),
+  CONSTRAINT fk_stocks_users_stck FOREIGN KEY (stock_id) REFERENCES stock_transaction (id)
+)

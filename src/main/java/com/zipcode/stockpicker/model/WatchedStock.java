@@ -3,11 +3,11 @@ package com.zipcode.stockpicker.model;
 import javax.persistence.*;
 import java.time.LocalDate;
 
-import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.CascadeType.*;
 
 @Entity
 @Table(name = "watched_stocks")
-public class WatchedStocks {
+public class WatchedStock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -17,14 +17,13 @@ public class WatchedStocks {
     @Column(name = "end_watch")
     private LocalDate endWatch;
 
-    @OneToOne(cascade = ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="fk_stock")
-    @Column(name="stock_symbol_id")
+    @ManyToOne(cascade = ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name= "stock_symbol_id")
     private StockSymbol stockSymbol;
 
-    public WatchedStocks () {}
+    public WatchedStock() {}
 
-    public WatchedStocks(LocalDate startWatch, LocalDate endWatch, StockSymbol stockSymbol) {
+    public WatchedStock(LocalDate startWatch, LocalDate endWatch, StockSymbol stockSymbol) {
         this.startWatch = startWatch;
         this.endWatch = endWatch;
         this.stockSymbol = stockSymbol;

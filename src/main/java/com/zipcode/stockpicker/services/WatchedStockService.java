@@ -1,26 +1,37 @@
 package com.zipcode.stockpicker.services;
 
-import com.zipcode.stockpicker.model.WatchedStocks;
+import com.zipcode.stockpicker.model.StockSymbol;
+import com.zipcode.stockpicker.model.WatchedStock;
+import com.zipcode.stockpicker.repository.StockSymbolRepository;
 import com.zipcode.stockpicker.repository.WatchedStockRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
-public class WatchedStocksService {
+public class WatchedStockService {
     private WatchedStockRepository repository;
+    private StockSymbolRepository stockSymbolRepository;
 
-    public WatchedStocks watchNewStock(    @Column(name = "end_watch")
-                                           private LocalDate endWatch;
+    @Autowired
+    public WatchedStockService(WatchedStockRepository repo, StockSymbolRepository stockSymbolRepository) {
+        this.repository = repo;
+        this.stockSymbolRepository = stockSymbolRepository;
+    }
 
-                                                   @OneToOne(cascade = ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name="fk_stock")
-    @Column(name="stock_symbol_id")
-    private StockSymbol stockSymbol;
+    public WatchedStock watchNewStock(WatchedStock watchedStock) {
+        StockSymbol stockSymbol = watchedStock.getStockSymbol();
+        watchedStock.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
+        return repository.save(watchedStock);
+    }
 
-    public WatchedStocks () {}
-
-    public WatchedStocks(LocalDate startWatch, LocalDate endWatch, StockSymbol stockSymbol) {
-        this.startWatch = startWatch;
-        this.endWatch = endWatch;
-        this.stockSymbol = stockSymbol;
-    })
+    public WatchedStock stopWatchingStock(Integer id) {
+        WatchedStock watchedStock = repository.getOne(id);
+        if(watchedStock == null){
+            throw new IllegalArgumentException("Stock was not watched");
+        }
+        watchedStock.setEndWatch(LocalDate.now());
+        return repository.save(watchedStock);
+    }
 }
