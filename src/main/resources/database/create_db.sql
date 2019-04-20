@@ -1,9 +1,9 @@
 # mysql -u root -p < create_db.sql
 
-DROP DATABASE if exists stocks;
-CREATE DATABASE stocks;
+# DROP SCHEMA if exists stocks;
+#CREATE SCHEMA stocks;
 
-USE stocks;
+# USE stocks;
 
 CREATE TABLE user_profiles
 (
@@ -78,4 +78,4 @@ CREATE TABLE stocks_users_XREF
   CONSTRAINT pk_stocks_users_XREF PRIMARY KEY (id),
   CONSTRAINT fk_stocks_users_user FOREIGN KEY (user_id) REFERENCES user_profiles (user_id),
   CONSTRAINT fk_stocks_users_stck FOREIGN KEY (stock_id) REFERENCES stock_transaction (id)
-)
+);
