@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d2deb836-0c0e-40dc-ae9f-04e7d1bc5674" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/zipcode/stockpicker/controller/WatchedStockController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zipcode/stockpicker/controller/WatchedStockController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/zipcode/stockpicker/services/WatchedStockService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zipcode/stockpicker/services/WatchedStockService.java" afterDir="false" />
-    </list>
+    <list default="true" id="d2deb836-0c0e-40dc-ae9f-04e7d1bc5674" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -89,8 +86,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-229" />
-    <option name="y" value="-1040" />
+    <option name="x" value="-192" />
+    <option name="y" value="-1005" />
     <option name="width" value="1920" />
     <option name="height" value="1057" />
   </component>
@@ -214,7 +211,7 @@
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555784187564" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555784758149" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -286,7 +283,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1555782177511</updated>
-      <workItem from="1555782180769" duration="1693000" />
+      <workItem from="1555782180769" duration="1991000" />
     </task>
     <servers />
   </component>
@@ -299,10 +296,10 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1693000" />
+    <option name="totallyTimeSpent" value="1991000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-229" y="-1040" width="1920" height="1057" extended-state="0" />
+    <frame x="-192" y="-1005" width="1920" height="1057" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Designer" />
