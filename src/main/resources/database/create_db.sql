@@ -1,9 +1,12 @@
 # mysql -u root -p < create_db.sql
 
-# DROP SCHEMA if exists stocks;
-#CREATE SCHEMA stocks;
-
-# USE stocks;
+DROP TABLE if exists stock_history;
+DROP TABLE if exists watched_stocks;
+DROP TABLE if exists account;
+DROP TABLE if exists stocks_users_XREF;
+DROP TABLE if exists  stock_transaction;
+DROP TABLE if exists user_profiles;
+DROP TABLE if exists stock_symbol;
 
 CREATE TABLE user_profiles
 (
@@ -13,6 +16,7 @@ CREATE TABLE user_profiles
   username   varchar(50) NOT NULL,
   CONSTRAINT pk_user PRIMARY KEY (user_id)
 );
+
 
 CREATE TABLE account
 (

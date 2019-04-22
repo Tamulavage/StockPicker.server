@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin
 @RequestMapping("/watch")
@@ -24,7 +26,17 @@ public class WatchedStockController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Iterable<WatchedStock>> getWatchedStock(){
+    public ResponseEntity<List<WatchedStock>> getWatchedStock(){
         return new ResponseEntity<>(watchedStockService.getWatchedStocks(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<WatchedStock> deleteWatchedStock(@PathVariable Integer id){
+        return new ResponseEntity<>(watchedStockService.deleteWatchedStocks(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/end/{id}")
+    public ResponseEntity<WatchedStock> updateEndDate(@PathVariable Integer id){
+        return new ResponseEntity<>(watchedStockService.stopWatchingStock(id), HttpStatus.OK);
     }
 }
