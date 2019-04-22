@@ -40,9 +40,8 @@ public class WatchedStockService {
         return repository.findAll();
     }
 
-    public WatchedStock deleteWatchedStocks(Integer id) {
+ public void deleteWatchedStocks(Integer id) {
         WatchedStock watchedStock = repository.getOne(id);
-        repository.deleteById(id);
-        return watchedStock;
+        repository.delete(watchedStock);
     }
 }

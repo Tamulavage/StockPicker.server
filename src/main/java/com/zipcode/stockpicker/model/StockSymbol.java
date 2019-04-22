@@ -1,6 +1,8 @@
 package com.zipcode.stockpicker.model;
 
 
+import sun.awt.Symbol;
+
 import javax.persistence.*;
 
 @Entity
@@ -25,6 +27,11 @@ public class StockSymbol {
         this.id = id;
         this.symbol = symbol;
     }
+
+//    public StockSymbol(StockSymbol stockSymbol) {
+//        this.id = id;
+//        this.symbol = symbol;
+//    }
 
     public Integer getId() {
         return id;

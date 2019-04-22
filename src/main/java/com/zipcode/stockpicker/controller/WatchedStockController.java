@@ -32,7 +32,9 @@ public class WatchedStockController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<WatchedStock> deleteWatchedStock(@PathVariable Integer id){
-        return new ResponseEntity<>(watchedStockService.deleteWatchedStocks(id), HttpStatus.OK);
+        //return new ResponseEntity<>(watchedStockService.deleteWatchedStocks(id), HttpStatus.OK);
+        watchedStockService.deleteWatchedStocks(id);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PostMapping("/end/{id}")

@@ -17,7 +17,7 @@ public class WatchedStock {
     @Column(name = "end_watch")
     private LocalDate endWatch;
 
-    @ManyToOne(cascade = ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name= "stock_symbol_id")
     private StockSymbol stockSymbol;
 
