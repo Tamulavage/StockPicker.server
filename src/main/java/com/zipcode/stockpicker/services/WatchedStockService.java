@@ -39,4 +39,9 @@ public class WatchedStockService {
     public List<WatchedStock> getWatchedStocks() {
         return repository.findAll();
     }
+
+ public void deleteWatchedStocks(Integer id) {
+        WatchedStock watchedStock = repository.getOne(id);
+        repository.delete(watchedStock);
+    }
 }

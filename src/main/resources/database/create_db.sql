@@ -1,9 +1,12 @@
 # mysql -u root -p < create_db.sql
 
-DROP DATABASE if exists stocks;
-CREATE DATABASE stocks;
-
-USE stocks;
+DROP TABLE if exists stock_history;
+DROP TABLE if exists watched_stocks;
+DROP TABLE if exists account;
+DROP TABLE if exists stocks_users_XREF;
+DROP TABLE if exists  stock_transaction;
+DROP TABLE if exists user_profiles;
+DROP TABLE if exists stock_symbol;
 
 CREATE TABLE user_profiles
 (
@@ -13,6 +16,7 @@ CREATE TABLE user_profiles
   username   varchar(50) NOT NULL,
   CONSTRAINT pk_user PRIMARY KEY (user_id)
 );
+
 
 CREATE TABLE account
 (
@@ -78,4 +82,8 @@ CREATE TABLE stocks_users_XREF
   CONSTRAINT pk_stocks_users_XREF PRIMARY KEY (id),
   CONSTRAINT fk_stocks_users_user FOREIGN KEY (user_id) REFERENCES user_profiles (user_id),
   CONSTRAINT fk_stocks_users_stck FOREIGN KEY (stock_id) REFERENCES stock_transaction (id)
-)
+);
+
+INSERT INTO stock_symbol (id, symbol)
+values (1 , "XYZ"),
+       (2, "ABC");
