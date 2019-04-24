@@ -28,11 +28,6 @@ public class StockSymbol {
         this.symbol = symbol;
     }
 
-//    public StockSymbol(StockSymbol stockSymbol) {
-//        this.id = id;
-//        this.symbol = symbol;
-//    }
-
     public Integer getId() {
         return id;
     }
