@@ -84,6 +84,6 @@ CREATE TABLE stocks_users_XREF
   CONSTRAINT fk_stocks_users_stck FOREIGN KEY (stock_id) REFERENCES stock_transaction (id)
 );
 
-INSERT INTO StockSymbol (id, symbol)
+INSERT INTO stock_symbol (id, symbol)
 values (1 , "XYZ"),
        (2, "ABC");

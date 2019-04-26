@@ -1,8 +1,6 @@
 package com.zipcode.stockpicker.model;
 
 
-import sun.awt.Symbol;
-
 import javax.persistence.*;
 
 @Entity

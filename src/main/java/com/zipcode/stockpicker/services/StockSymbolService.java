@@ -27,7 +27,7 @@ public class StockSymbolService {
     }
 
     public void removeStockSymbolById(Integer id){
-        StockSymbol symbol = stockSymbolRepository.getOne(id);
+       // StockSymbol symbol = stockSymbolRepository.getOne(id);
         stockSymbolRepository.deleteById(id);
     }
 
