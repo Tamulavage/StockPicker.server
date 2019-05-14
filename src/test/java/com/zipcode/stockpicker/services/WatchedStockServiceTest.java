@@ -1,9 +1,7 @@
 package com.zipcode.stockpicker.services;
 
-import com.zipcode.stockpicker.model.StockHistory;
 import com.zipcode.stockpicker.model.StockSymbol;
 import com.zipcode.stockpicker.model.WatchedStock;
-import com.zipcode.stockpicker.repository.StockHistoryRepository;
 import com.zipcode.stockpicker.repository.StockSymbolRepository;
 import com.zipcode.stockpicker.repository.WatchedStockRepository;
 import org.junit.Assert;
