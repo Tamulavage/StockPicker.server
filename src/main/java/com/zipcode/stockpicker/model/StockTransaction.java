@@ -20,19 +20,21 @@ public class StockTransaction{
     private StockSymbol stockSymbol;
 
     @Column(name = "buy_price")
-    BigInteger buyPrice;
+    private BigInteger buyPrice;
 
     @Column(name = "sell_price")
-    BigInteger sellPrice;
+    private BigInteger sellPrice;
 
     @Column(name = "buy_dt")
-    Date buyDate;
+    private Date buyDate;
     
     @Column(name = "sell_dt")
-    Date sellDate;
+    private Date sellDate;
 
     @Column(name = "qty")
-    BigInteger quantity;
+    private BigInteger quantity;
+
+    public StockTransaction() {}
 
     public StockTransaction(StockSymbol stockSymbol, Date buyDate, Date sellDate,
          BigInteger buyPrice, BigInteger sellPrice, BigInteger qty){
@@ -42,5 +44,54 @@ public class StockTransaction{
              this.buyPrice = buyPrice;
              this.sellPrice = sellPrice;
              this.quantity = qty;
-         }
+     }
+
+
+    public void setSellDate(Date sellDate) {
+        this.sellDate = sellDate;
+    }
+
+    public Date getSellDate(){
+        return this.sellDate;
+    }
+
+    public void setQuantity(BigInteger qty) {
+        this.quantity = qty;
+    }
+
+    public BigInteger getQuantity(){
+        return this.quantity;
+    }
+
+    public void setBuyDate(Date buyDate){
+        this.buyDate = buyDate;
+    }
+
+    public Date getBuyDate(){
+        return this.buyDate;
+    }
+
+    public StockSymbol getStockSymbol() {
+        return stockSymbol;
+    }
+
+    public void setStockSymbol(StockSymbol stockSymbol) {
+        this.stockSymbol = stockSymbol;
+    } 
+
+    public void setBuyPrice(BigInteger buyPrice){
+        this.buyPrice = buyPrice;
+    }
+
+    public BigInteger getBuyPrice(){
+        return this.buyPrice;
+    }
+
+    public void setSellPrice(BigInteger sellPrice){
+        this.sellPrice = sellPrice;
+    }
+
+    public BigInteger getSellPrice(){
+        return this.sellPrice;
+    }
 }

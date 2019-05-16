@@ -21,7 +21,8 @@ public class StockHistoryService {
 
     public StockHistory addStockHistory(StockHistory stockHistory) {
         StockSymbol stockSymbol = stockHistory.getStockSymbol();
-        stockHistory.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
+     //   stockHistory.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
+        stockHistory.setStockSymbol(stockSymbol);
         return stockHistoryRepository.save(stockHistory);
     }
 }

@@ -40,7 +40,7 @@ public class WatchedStockService {
         return repository.findAll();
     }
 
- public void deleteWatchedStocks(Integer id) {
+    public void deleteWatchedStocks(Integer id) {
         WatchedStock watchedStock = repository.getOne(id);
         repository.delete(watchedStock);
     }
