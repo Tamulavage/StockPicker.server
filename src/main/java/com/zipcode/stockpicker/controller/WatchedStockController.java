@@ -30,6 +30,12 @@ public class WatchedStockController {
         return new ResponseEntity<>(watchedStockService.getWatchedStocks(), HttpStatus.OK);
     }
 
+    // TODO: remove in future
+    @GetMapping("/refresh/{id}")
+    public ResponseEntity<List<WatchedStock>> getRecentStockValues(@PathVariable Integer id){
+        return new ResponseEntity<>(watchedStockService.getRecentStockValues(id), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<WatchedStock> deleteWatchedStock(@PathVariable Integer id){
         //return new ResponseEntity<>(watchedStockService.deleteWatchedStocks(id), HttpStatus.OK);
