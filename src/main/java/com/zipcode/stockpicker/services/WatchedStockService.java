@@ -1,5 +1,10 @@
 package com.zipcode.stockpicker.services;
 
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.util.*;
+
+import org.apache.tomcat.util.json.JSONParser;
+import org.json.*;
 import com.zipcode.stockpicker.model.History;
 import com.zipcode.stockpicker.model.StockSymbol;
 import com.zipcode.stockpicker.model.WatchedStock;
@@ -10,8 +15,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DateFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.TreeMap;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
 
 @Service
 public class WatchedStockService {
@@ -53,18 +63,36 @@ public class WatchedStockService {
         String apiUri =  "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
         String apiKey = "&apikey=HNX418W2U7ARUI2F";
         String stockShort = "JPM";
+        TreeMap stockValuesLastHundred = new TreeMap();
 
         String apiUrl = apiUri+stockShort+apiKey;
 
-        ResponseEntity<String> response =
-            restTemplate.getForEntity(apiUrl, String.class);
+         ResponseEntity<String> response =
+             restTemplate.getForEntity(apiUrl, String.class);
 
-        System.out.println(response.getBody());
+          JSONObject timeDailyDataAll = new JSONObject(response.getBody());
+          JSONObject timeSeries = timeDailyDataAll.getJSONObject("Time Series (Daily)");
+          Iterator keys = timeSeries.keys();
+          SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-        History history =
-         restTemplate.getForObject(apiUrl, History.class);
+          while(keys.hasNext()){
+            String stringDateOfData = (String)keys.next();
+            System.out.println(stringDateOfData);
+            try{
+                Date date = format.parse(stringDateOfData);
+                stockValuesLastHundred.put(date, "test");
+                JSONObject valueOfData = timeSeries.getJSONObject(stringDateOfData);
 
-       //  System.out.println(history.getHighAmount());
+                // TODO: Move from SOUTs to actual object, then pass the map back
+                System.out.println(valueOfData.get("1. open").toString());
+                System.out.println(valueOfData.get("2. high").toString());
+                System.out.println(valueOfData.get("3. low").toString());
+                System.out.println(valueOfData.get("4. close").toString());
+                System.out.println(valueOfData.get("5. volume").toString());
+            }
+            catch (Exception e) {}
+
+          }
 
         return null;
     }

@@ -1,13 +1,17 @@
 package com.zipcode.stockpicker.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 // TODO: Deduplicate this with StockHistory class once determined which one to use
 
 public class History {
+    @JsonSerialize
+
     private Double openAmount;
     private Double closeAmount;
     private Double highAmount;
     private Double lowAmount;
     private Integer volume;
+
 
     public Double getOpenAmount() {
         return openAmount;
