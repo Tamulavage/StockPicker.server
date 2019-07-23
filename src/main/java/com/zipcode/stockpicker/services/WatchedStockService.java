@@ -5,7 +5,8 @@ import com.fasterxml.jackson.databind.util.*;
 
 import org.apache.tomcat.util.json.JSONParser;
 import org.json.*;
-import com.zipcode.stockpicker.model.History;
+
+import com.zipcode.stockpicker.model.DailyStockData;
 import com.zipcode.stockpicker.model.StockSymbol;
 import com.zipcode.stockpicker.model.WatchedStock;
 import com.zipcode.stockpicker.repository.StockSymbolRepository;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.time.LocalDate;
 import java.util.List;
@@ -80,15 +83,22 @@ public class WatchedStockService {
             System.out.println(stringDateOfData);
             try{
                 Date date = format.parse(stringDateOfData);
-                stockValuesLastHundred.put(date, "test");
+
                 JSONObject valueOfData = timeSeries.getJSONObject(stringDateOfData);
 
-                // TODO: Move from SOUTs to actual object, then pass the map back
-                System.out.println(valueOfData.get("1. open").toString());
-                System.out.println(valueOfData.get("2. high").toString());
-                System.out.println(valueOfData.get("3. low").toString());
-                System.out.println(valueOfData.get("4. close").toString());
-                System.out.println(valueOfData.get("5. volume").toString());
+                BigDecimal openAmount = new BigDecimal(valueOfData.get("1. open").toString());
+                BigDecimal closeAmount = new BigDecimal(valueOfData.get("4. close").toString());
+                BigDecimal highAmount = new BigDecimal(valueOfData.get("2. high").toString());
+                BigDecimal lowAmount = new BigDecimal(valueOfData.get("3. low").toString());
+                BigInteger volume = new BigInteger(valueOfData.get("5. volume").toString());
+
+                DailyStockData dailyStockData = new DailyStockData(openAmount, 
+                    closeAmount, 
+                    highAmount, 
+                    lowAmount, 
+                    volume);
+
+                stockValuesLastHundred.put(date, dailyStockData);
             }
             catch (Exception e) {}
 
