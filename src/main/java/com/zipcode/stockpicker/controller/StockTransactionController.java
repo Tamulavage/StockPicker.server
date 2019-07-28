@@ -24,11 +24,11 @@ public class StockTransactionController {
 
     @PostMapping("/new")
     public ResponseEntity<StockTransaction> addNewTrade(@RequestBody StockTransaction stockTransaction){
-        return new ResponseEntity<>(stockTransactionService.newStockTransaction(stockTransaction), HttpStatus.CREATED);
+        return new ResponseEntity<>(stockTransactionService.newStockTrade(stockTransaction), HttpStatus.CREATED);
     }
 
     @GetMapping("/")
     public ResponseEntity<List<StockTransaction>> getTradedStocks(){
-        return new ResponseEntity<>(stockTransactionService.getTradedStocks(), HttpStatus.OK);
+        return new ResponseEntity<>(stockTransactionService.getAllTradedStocks(), HttpStatus.OK);
     }
 }

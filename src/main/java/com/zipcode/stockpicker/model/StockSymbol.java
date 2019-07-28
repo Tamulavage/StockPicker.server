@@ -14,6 +14,9 @@ public class StockSymbol {
     @Column(name = "Symbol")
     private String symbol;
 
+    @Column(name = "name")
+    private String name;
+
     public StockSymbol() {
     }
 
@@ -40,5 +43,13 @@ public class StockSymbol {
 
     public void setSymbol(String symbol) {
         this.symbol = symbol;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

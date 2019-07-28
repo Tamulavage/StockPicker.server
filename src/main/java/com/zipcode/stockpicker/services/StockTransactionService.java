@@ -23,11 +23,23 @@ public class StockTransactionService {
         this.stockSymbolRepository = stockSymbolRepository;
     }
 
-    public List<StockTransaction> getTradedStocks() {
+    public List<StockTransaction> getAllTradedStocks() {
         return stockTransactionRepository.findAll();
     }
 
-    public StockTransaction newStockTransaction(StockTransaction stockTransaction){
+    public List<StockTransaction> getTradedStocksByStock() {
+        return null;
+    }
+
+    public List<StockTransaction> getCurrentTradedStocks() {
+        return null;
+    }
+
+    public List<StockTransaction> getCurrentTradedStocksByStock() {
+        return null;
+    }
+
+    public StockTransaction newStockTrade(StockTransaction stockTransaction){
         return stockTransactionRepository.save(stockTransaction);
     }
 
@@ -52,9 +64,6 @@ public class StockTransactionService {
         return false;
     }
 
-    private StockTransaction[] getCurrenTransactions(){
-        return null;
-    }
 
     // TODO: MVP Is to sell/buy all in batch - need to break in future
 }

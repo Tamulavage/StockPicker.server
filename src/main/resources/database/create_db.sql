@@ -31,6 +31,7 @@ CREATE TABLE stock_symbol
 (
   id     INTEGER     NOT NULL auto_increment,
   symbol VARCHAR(10) NOT NULL,
+  name   VARCHAR(50) ;
   CONSTRAINT pk_stock_symbol PRIMARY KEY (id)
 );
 

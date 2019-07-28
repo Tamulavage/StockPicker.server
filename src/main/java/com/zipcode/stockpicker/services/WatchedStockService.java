@@ -1,9 +1,6 @@
 package com.zipcode.stockpicker.services;
 
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.util.*;
 
-import org.apache.tomcat.util.json.JSONParser;
 import org.json.*;
 
 import com.zipcode.stockpicker.model.DailyStockData;
@@ -18,7 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.TreeMap;
@@ -80,7 +76,6 @@ public class WatchedStockService {
 
           while(keys.hasNext()){
             String stringDateOfData = (String)keys.next();
-            System.out.println(stringDateOfData);
             try{
                 Date date = format.parse(stringDateOfData);
 
@@ -100,7 +95,9 @@ public class WatchedStockService {
 
                 stockValuesLastHundred.put(date, dailyStockData);
             }
-            catch (Exception e) {}
+            catch (Exception e) {
+                e.getMessage();
+            }
 
           }
 
