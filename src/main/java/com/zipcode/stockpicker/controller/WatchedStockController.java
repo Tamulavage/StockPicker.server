@@ -1,6 +1,7 @@
 package com.zipcode.stockpicker.controller;
 
 
+import com.zipcode.stockpicker.model.Indicator;
 import com.zipcode.stockpicker.model.WatchedStock;
 import com.zipcode.stockpicker.services.WatchedStockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,20 @@ public class WatchedStockController {
     // TODO: remove in future
     @GetMapping("/refresh/{id}")
     public ResponseEntity<List<WatchedStock>> getRecentStockValues(@PathVariable Integer id){
-        return new ResponseEntity<>(watchedStockService.getRecentStockValues(id), HttpStatus.OK);
+      //  return new ResponseEntity<>(watchedStockService.getRecentStockValues(id), HttpStatus.OK);
+      return null;
+    }
+
+    @GetMapping("/analyzeWatchedStocks/")
+    public ResponseEntity<List<Indicator>> analyzeWatchedStocks(){
+     //   return new ResponseEntity<>(watchedStockService.analyzeWatchedStocks(), HttpStatus.OK);
+     // TODO: complete once single is populated
+     return null;
+    }
+
+    @GetMapping("/analyzeWatchedStock/{id}")
+    public ResponseEntity<Indicator> analyzeWatchedStocks(@PathVariable Integer id){
+        return new ResponseEntity<>(watchedStockService.analyzeWatchedStock(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

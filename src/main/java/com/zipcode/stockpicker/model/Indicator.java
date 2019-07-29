@@ -10,6 +10,9 @@ public class Indicator {
     String suggestedAction;
     Integer indicatorStrength;
 
+    public Indicator(){   
+    }
+
     
     public Indicator(StockSymbol stock, BigDecimal supportLine, BigDecimal resistanceLine, Integer timeFrameInDays) {
         this.stock = stock;

@@ -21,6 +21,7 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
+    // TODO: remove after security is added
     public List<Account> getAccounts(){
         return accountRepository.findAll();
     }

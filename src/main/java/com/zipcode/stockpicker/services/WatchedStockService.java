@@ -4,6 +4,7 @@ package com.zipcode.stockpicker.services;
 import org.json.*;
 
 import com.zipcode.stockpicker.model.DailyStockData;
+import com.zipcode.stockpicker.model.Indicator;
 import com.zipcode.stockpicker.model.StockSymbol;
 import com.zipcode.stockpicker.model.WatchedStock;
 import com.zipcode.stockpicker.repository.StockSymbolRepository;
@@ -57,14 +58,44 @@ public class WatchedStockService {
         repository.delete(watchedStock);
     }
 
-    public List<WatchedStock> getRecentStockValues(Integer id){
+    public Indicator analyzeWatchedStock(Integer id){
+
+        StockSymbol stockSymbol = getStockSymbolById(id);
+        TreeMap dailyStock = getRecentStockValues(stockSymbol.getSymbol());
+        Indicator indicator = getIndicator(dailyStock, stockSymbol);
+        return indicator;
+    }
+
+    private Indicator getIndicator(TreeMap dailyStock, StockSymbol stock) {
+        // TODO: Run indicator here: Remove hard coded values
+        Indicator indicator = new Indicator();
+        indicator.setIndicatorStrength(50);
+        indicator.setResistanceLine(new BigDecimal("100.5"));
+        indicator.setSupportLine(new BigDecimal("100"));
+        indicator.setSuggestedAction("Stay");
+
+        indicator.setStock(stock);
+
+        return indicator;
+    }
+
+    private StockSymbol getStockSymbolById(Integer id) {
+        // TODO : Remove hard coded value
+        // Get this info from the table
+        StockSymbol stockSymbol = new StockSymbol();
+        stockSymbol.setName("testing");
+        stockSymbol.setSymbol("ABCD");
+
+        return stockSymbol;
+    }
+
+    public TreeMap getRecentStockValues(String stockName){
         RestTemplate restTemplate = new RestTemplate();
         String apiUri =  "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
         String apiKey = "&apikey=HNX418W2U7ARUI2F";
-        String stockShort = "JPM";
         TreeMap stockValuesLastHundred = new TreeMap();
 
-        String apiUrl = apiUri+stockShort+apiKey;
+        String apiUrl = apiUri+stockName+apiKey;
 
          ResponseEntity<String> response =
              restTemplate.getForEntity(apiUrl, String.class);
@@ -101,6 +132,6 @@ public class WatchedStockService {
 
           }
 
-        return null;
+        return stockValuesLastHundred;
     }
 }

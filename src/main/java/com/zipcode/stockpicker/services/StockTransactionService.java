@@ -27,7 +27,7 @@ public class StockTransactionService {
         return stockTransactionRepository.findAll();
     }
 
-    public List<StockTransaction> getTradedStocksByStock() {
+    public List<StockTransaction> getTradedStocksByStock(Integer id) {
         return null;
     }
 
@@ -35,7 +35,7 @@ public class StockTransactionService {
         return null;
     }
 
-    public List<StockTransaction> getCurrentTradedStocksByStock() {
+    public List<StockTransaction> getCurrentTradedStocksByStock(Integer id) {
         return null;
     }
 
