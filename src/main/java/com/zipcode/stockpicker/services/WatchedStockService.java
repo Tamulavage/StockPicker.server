@@ -63,7 +63,7 @@ public class WatchedStockService {
 
         try{
           StockSymbol stockSymbol = getStockSymbolById(id);
-          TreeMap dailyStock = getRecentStockValues(stockSymbol.getSymbol());
+          TreeMap<Date,DailyStockData>  dailyStock = getRecentStockValues(stockSymbol.getSymbol());
           Indicator indicator = getIndicator(dailyStock, stockSymbol);
 
           return indicator;
@@ -74,7 +74,7 @@ public class WatchedStockService {
         }
     }
 
-    private Indicator getIndicator(TreeMap dailyStock, StockSymbol stock) {
+    private Indicator getIndicator(TreeMap<Date,DailyStockData> dailyStock, StockSymbol stock) {
         // TODO: Run indicator here: Remove hard coded values
         Indicator indicator = new Indicator();
         indicator.setIndicatorStrength(50);
@@ -98,11 +98,11 @@ public class WatchedStockService {
         }
     }
 
-    public TreeMap getRecentStockValues(String stockName){
+    public TreeMap<Date,DailyStockData>  getRecentStockValues(String stockName){
         RestTemplate restTemplate = new RestTemplate();
         String apiUri =  "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
         String apiKey = "&apikey=HNX418W2U7ARUI2F";
-        TreeMap stockValuesLastHundred = new TreeMap();
+        TreeMap<Date,DailyStockData>  stockValuesLastHundred = new TreeMap<Date,DailyStockData>();
 
         String apiUrl = apiUri+stockName+apiKey;
 
@@ -111,7 +111,7 @@ public class WatchedStockService {
 
           JSONObject timeDailyDataAll = new JSONObject(response.getBody());
           JSONObject timeSeries = timeDailyDataAll.getJSONObject("Time Series (Daily)");
-          Iterator keys = timeSeries.keys();
+          Iterator<String> keys = timeSeries.keys();
           SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
           while(keys.hasNext()){

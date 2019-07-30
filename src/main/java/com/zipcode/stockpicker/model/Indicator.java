@@ -69,5 +69,4 @@ public class Indicator {
         this.indicatorStrength = indicatorStrength;
     }
 
-
 }

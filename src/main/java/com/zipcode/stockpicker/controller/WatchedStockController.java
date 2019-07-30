@@ -31,13 +31,6 @@ public class WatchedStockController {
         return new ResponseEntity<>(watchedStockService.getWatchedStocks(), HttpStatus.OK);
     }
 
-    // TODO: remove in future
-    @GetMapping("/refresh/{id}")
-    public ResponseEntity<List<WatchedStock>> getRecentStockValues(@PathVariable Integer id){
-      //  return new ResponseEntity<>(watchedStockService.getRecentStockValues(id), HttpStatus.OK);
-      return null;
-    }
-
     @GetMapping("/analyzeWatchedStocks/")
     public ResponseEntity<List<Indicator>> analyzeWatchedStocks(){
      //   return new ResponseEntity<>(watchedStockService.analyzeWatchedStocks(), HttpStatus.OK);

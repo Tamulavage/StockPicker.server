@@ -45,6 +45,4 @@ public class Account {
         this.userId = userId;
     }
 
-
-
 }
