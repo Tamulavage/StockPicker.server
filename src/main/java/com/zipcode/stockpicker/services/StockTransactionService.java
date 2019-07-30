@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.zipcode.stockpicker.model.StockSymbol;
 import com.zipcode.stockpicker.model.StockTransaction;
-import com.zipcode.stockpicker.repository.StockSymbolRepository;
 import com.zipcode.stockpicker.repository.StockTransactionRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,10 @@ import org.springframework.stereotype.Service;
 public class StockTransactionService {
 
     private StockTransactionRepository stockTransactionRepository;
-    private StockSymbolRepository stockSymbolRepository;
 
     @Autowired
-    public StockTransactionService(StockTransactionRepository stockTransactionRepository,
-        StockSymbolRepository stockSymbolRepository) {
+    public StockTransactionService(StockTransactionRepository stockTransactionRepository) {
         this.stockTransactionRepository = stockTransactionRepository;
-        this.stockSymbolRepository = stockSymbolRepository;
     }
 
     public List<StockTransaction> getAllTradedStocks() {
@@ -63,7 +59,6 @@ public class StockTransactionService {
     private boolean userHasCurrentStock(StockSymbol stockSymbol){
         return false;
     }
-
 
     // TODO: MVP Is to sell/buy all in batch - need to break in future
 }

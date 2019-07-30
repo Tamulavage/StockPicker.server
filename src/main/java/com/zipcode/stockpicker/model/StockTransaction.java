@@ -1,7 +1,6 @@
 package com.zipcode.stockpicker.model;
 
 import javax.persistence.*;
-import static javax.persistence.CascadeType.ALL;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -15,7 +14,7 @@ public class StockTransaction{
     @Column(name = "ID")
     private Integer id;
 
-    @ManyToOne(cascade = ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name= "stock_symbol_id")
     private StockSymbol stockSymbol;
 
@@ -45,7 +44,6 @@ public class StockTransaction{
              this.sellPrice = sellPrice;
              this.quantity = qty;
      }
-
 
     public void setSellDate(Date sellDate) {
         this.sellDate = sellDate;

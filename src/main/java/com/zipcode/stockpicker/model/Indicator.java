@@ -12,7 +12,6 @@ public class Indicator {
 
     public Indicator(){   
     }
-
     
     public Indicator(StockSymbol stock, BigDecimal supportLine, BigDecimal resistanceLine, Integer timeFrameInDays) {
         this.stock = stock;

@@ -1,6 +1,5 @@
 package com.zipcode.stockpicker.services;
 
-
 import org.json.*;
 
 import com.zipcode.stockpicker.model.DailyStockData;

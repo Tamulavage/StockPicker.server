@@ -1,6 +1,5 @@
 package com.zipcode.stockpicker.model;
 
-
 import javax.persistence.*;
 
 @Entity
@@ -38,7 +37,7 @@ public class StockSymbol {
     }
 
     public String getSymbol() {
-        return symbol;
+        return this.symbol;
     }
 
     public void setSymbol(String symbol) {
@@ -46,7 +45,7 @@ public class StockSymbol {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
