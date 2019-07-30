@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -60,10 +61,17 @@ public class WatchedStockService {
 
     public Indicator analyzeWatchedStock(Integer id){
 
-        StockSymbol stockSymbol = getStockSymbolById(id);
-        TreeMap dailyStock = getRecentStockValues(stockSymbol.getSymbol());
-        Indicator indicator = getIndicator(dailyStock, stockSymbol);
-        return indicator;
+        try{
+          StockSymbol stockSymbol = getStockSymbolById(id);
+          TreeMap dailyStock = getRecentStockValues(stockSymbol.getSymbol());
+          Indicator indicator = getIndicator(dailyStock, stockSymbol);
+
+          return indicator;
+        }
+        catch(Exception e){
+            System.err.println(e.getMessage());
+            return null;
+        }
     }
 
     private Indicator getIndicator(TreeMap dailyStock, StockSymbol stock) {
@@ -79,14 +87,15 @@ public class WatchedStockService {
         return indicator;
     }
 
-    private StockSymbol getStockSymbolById(Integer id) {
-        // TODO : Remove hard coded value
-        // Get this info from the table
-        StockSymbol stockSymbol = new StockSymbol();
-        stockSymbol.setName("testing");
-        stockSymbol.setSymbol("ABCD");
+    private StockSymbol getStockSymbolById(Integer id) throws Exception{
 
-        return stockSymbol;
+        Optional<StockSymbol> stockSymbol =  stockSymbolRepository.findById(id);
+        if(stockSymbol.isPresent()){
+         return stockSymbol.get();
+        }
+        else{
+            throw new Exception("Not valid Stock id");
+        }
     }
 
     public TreeMap getRecentStockValues(String stockName){
