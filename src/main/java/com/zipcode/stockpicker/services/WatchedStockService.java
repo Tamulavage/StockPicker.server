@@ -37,6 +37,9 @@ public class WatchedStockService {
     public WatchedStock watchNewStock(WatchedStock watchedStock) {
         StockSymbol stockSymbol = watchedStock.getStockSymbol();
         watchedStock.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
+        if(watchedStock.getStockSymbol()==null){
+            watchedStock.setStockSymbol(stockSymbolRepository.save(stockSymbol));
+        }
         return repository.save(watchedStock);
     }
 
@@ -48,6 +51,15 @@ public class WatchedStockService {
         watchedStock.setEndWatch(LocalDate.now());
         return repository.save(watchedStock);
     }
+
+    public WatchedStock stopWatchingStock(String stockName) {
+        StockSymbol stockSymbol = stockSymbolRepository.findBySymbol(stockName);
+        WatchedStock watchedStock = repository.findByStockSymbolId(stockSymbol.getId());
+        // WatchedStock watchedStock = new WatchedStock();
+        watchedStock.setEndWatch(LocalDate.now());
+        return repository.save(watchedStock);
+        // return null;
+	}
 
     public List<WatchedStock> getWatchedStocks() {
         return repository.findAll();
@@ -142,4 +154,6 @@ public class WatchedStockService {
 
         return stockValuesLastHundred;
     }
+
+
 }

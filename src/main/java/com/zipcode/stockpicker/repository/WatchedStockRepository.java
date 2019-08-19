@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WatchedStockRepository extends JpaRepository<WatchedStock, Integer> {
+    WatchedStock findByStockSymbolId(Integer integer);
 }

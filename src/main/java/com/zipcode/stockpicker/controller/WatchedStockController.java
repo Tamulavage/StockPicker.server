@@ -50,8 +50,13 @@ public class WatchedStockController {
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
-    @PostMapping("/end/{id}")
-    public ResponseEntity<WatchedStock> updateEndDate(@PathVariable Integer id){
-        return new ResponseEntity<>(watchedStockService.stopWatchingStock(id), HttpStatus.OK);
+    // @PostMapping("/end/{id}")
+    // public ResponseEntity<WatchedStock> updateEndDate(@PathVariable Integer id){
+    //     return new ResponseEntity<>(watchedStockService.stopWatchingStock(id), HttpStatus.OK);
+    // }
+
+    @PostMapping("/end/{name}")
+    public ResponseEntity<WatchedStock> updateEndDate(@PathVariable String name){
+        return new ResponseEntity<>(watchedStockService.stopWatchingStock(name), HttpStatus.OK);
     }
 }
