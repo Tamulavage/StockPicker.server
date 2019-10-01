@@ -25,4 +25,9 @@ public class AccountService {
     public List<Account> getAccounts(){
         return accountRepository.findAll();
     }
+
+    public Account getAccountByUsername(String username)
+    {   // TODO: fill in rest
+        return null;
+    }
 }
