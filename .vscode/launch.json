@@ -12,34 +12,34 @@
             "mainClass": "com.dmt.stockpicker.StockpickerApplication",
             "projectName": "stockpicker"
         },
-        {
-            "name": "Java",
-            "type": "java",
-            "request": "launch",
-            "stopOnEntry": true,
-            "jdkPath": "${env:JAVA_HOME}/bin",
-            "cwd": "${fileDirname}",
-            "startupClass": "${fileBasenameNoExtension}",
-            "classpath": [
-                ".",
-                "${fileDirname}"
-            ]
-        },
-        {
-            "name": "Java Console App",
-            "type": "java",
-            "request": "launch",
-            "stopOnEntry": true,
-            "jdkPath": "${env:JAVA_HOME}/bin",
-            "cwd": "${fileDirname}",
-            "startupClass": "${fileBasenameNoExtension}",
-            "classpath": [
-                ".",
-                "${fileDirname}"
-            ],
-            // "externalConsole": true
-            "externalConsole": false
-        },
+        // {
+        //     "name": "Java",
+        //     "type": "java",
+        //     "request": "launch",
+        //     "stopOnEntry": true,
+        //     "jdkPath": "${env:JAVA_HOME}/bin",
+        //     "cwd": "${fileDirname}",
+        //     "startupClass": "${fileBasenameNoExtension}",
+        //     "classpath": [
+        //         ".",
+        //         "${fileDirname}"
+        //     ]
+        // },
+        // {
+        //     "name": "Java Console App",
+        //     "type": "java",
+        //     "request": "launch",
+        //     "stopOnEntry": true,
+        //     "jdkPath": "${env:JAVA_HOME}/bin",
+        //     "cwd": "${fileDirname}",
+        //     "startupClass": "${fileBasenameNoExtension}",
+        //     "classpath": [
+        //         ".",
+        //         "${fileDirname}"
+        //     ],
+        //     // "externalConsole": true
+        //     "externalConsole": false
+        // },
         {
             "type": "java",
             "name": "Debug (Launch) - Current File",
