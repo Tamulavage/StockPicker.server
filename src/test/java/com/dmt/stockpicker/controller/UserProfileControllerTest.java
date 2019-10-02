@@ -1,5 +1,7 @@
 package com.dmt.stockpicker.controller;
 
+// import static org.junit.Assert.assertNull;
+
 import com.dmt.stockpicker.model.UserProfile;
 import com.dmt.stockpicker.repository.UserProfileRepository;
 import com.dmt.stockpicker.services.UserProfileService;
@@ -7,9 +9,11 @@ import com.dmt.stockpicker.services.UserProfileService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.BDDMockito;
+// import org.mockito.BDDMockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.ResponseEntity;
+// import org.springframework.http.ResponseEntity;
+
+// import junit.framework.Assert;
 
 
 
@@ -24,10 +28,10 @@ public class UserProfileControllerTest {
 
     @Before
     public void setupTest(){
-        // this.controller = new UserProfileController(service);
-        // this.userProfile = new UserProfile();
-        // this.userProfile.setUserId(1);
-        // this.userProfile.setUserName("tester");
+        this.controller = new UserProfileController(service);
+        this.userProfile = new UserProfile();
+        this.userProfile.setUserId(1);
+        this.userProfile.setUserName("tester");
     }
 
     @Test
@@ -37,6 +41,7 @@ public class UserProfileControllerTest {
         // when
 
         // Then
+        Assert.assertNull(null);
     }
 
     @Test
