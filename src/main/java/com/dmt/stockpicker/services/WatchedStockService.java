@@ -28,10 +28,14 @@ public class WatchedStockService {
     private WatchedStockRepository repository;
     private StockSymbolRepository stockSymbolRepository;
 
+    private RestTemplate restTemplate ;
+
+
     @Autowired
-    public WatchedStockService(WatchedStockRepository repo, StockSymbolRepository stockSymbolRepository) {
+    public WatchedStockService(WatchedStockRepository repo, StockSymbolRepository stockSymbolRepository, RestTemplate restTemplate) {
         this.repository = repo;
         this.stockSymbolRepository = stockSymbolRepository;
+        this.restTemplate = restTemplate;
     }
 
     public WatchedStock watchNewStock(WatchedStock watchedStock) {
@@ -110,7 +114,7 @@ public class WatchedStockService {
     }
 
     public TreeMap<Date,DailyStockData>  getRecentStockValues(String stockName){
-        RestTemplate restTemplate = new RestTemplate();
+        
         String apiUri =  "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
         String apiKey = "&apikey=HNX418W2U7ARUI2F";
         TreeMap<Date,DailyStockData>  stockValuesLastHundred = new TreeMap<Date,DailyStockData>();
@@ -149,7 +153,6 @@ public class WatchedStockService {
             catch (Exception e) {
                 e.getMessage();
             }
-
           }
 
         return stockValuesLastHundred;

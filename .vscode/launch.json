@@ -50,7 +50,7 @@
             "type": "java",
             "name": "Debug (Launch)-StockpickerApplication<stockpicker>",
             "request": "launch",
-            "mainClass": "com.zipcode.stockpicker.StockpickerApplication",
+            "mainClass": "com.dmt.stockpicker.StockpickerApplication",
             "projectName": "stockpicker"
         }
     ]
