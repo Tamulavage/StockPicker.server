@@ -1,54 +1,55 @@
 package com.dmt.stockpicker.controller;
 
-// import static org.junit.Assert.assertNull;
-
 import com.dmt.stockpicker.model.UserProfile;
 import com.dmt.stockpicker.repository.UserProfileRepository;
-// import com.dmt.stockpicker.services.UserProfileService;
+import com.dmt.stockpicker.services.UserProfileService;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-// import junit.framework.Assert;
-
-
-
+@RunWith(MockitoJUnitRunner.class)
 public class UserProfileControllerTest {
 
-    @MockBean
-    private UserProfileRepository userProfileRepository;
+    // @MockBean
+    // private UserProfileRepository userProfileRepository;
 
-    // private UserProfileController controller;
-    // private UserProfileService service;
+    private UserProfileController controller;
+
+    @Mock
+    private UserProfileService userProfileService;
     private UserProfile userProfile;
 
     @Before
     public void setupTest(){
-        // this.controller = new UserProfileController(service);
+        this.controller = new UserProfileController(userProfileService);
         this.userProfile = new UserProfile();
         this.userProfile.setUserId(1);
         this.userProfile.setUserName("tester");
     }
 
     @Test
-    public void addNewUserTest(){
+    public void getUserProfileByUsernameTest(){
         // given
+        HttpStatus expectedStatus = HttpStatus.OK;
+        BDDMockito
+            .given(userProfileService.getUserProfileByUsername(userProfile.getUserName()))
+            .willReturn(userProfile);
 
         // when
-
-        // Then
-        Assert.assertNull(null);
-    }
-
-    @Test
-    public void findUserbyUsernameTest(){
-        // given
-
-        // when
+        ResponseEntity<UserProfile> actual = controller.getUserProfileByUsername(userProfile.getUserName());
+        HttpStatus actualStatus = actual.getStatusCode();
+        UserProfile actualUserProfile = actual.getBody();
     
         // Then
+        Assert.assertEquals(expectedStatus, actualStatus);
+        Assert.assertEquals(userProfile, actualUserProfile);
     }
 }
 
