@@ -28,16 +28,7 @@ public class WatchedStockService {
     private WatchedStockRepository repository;
     private StockSymbolRepository stockSymbolRepository;
 
-    // @Autowired
     private RestTemplate restTemplate = new RestTemplate();
-
-
-    // @Autowired
-    // public WatchedStockService(WatchedStockRepository repo, StockSymbolRepository stockSymbolRepository, RestTemplate restTemplate) {
-    //     this.repository = repo;
-    //     this.stockSymbolRepository = stockSymbolRepository;
-    //     this.restTemplate = restTemplate;
-    // }
 
     @Autowired
     public WatchedStockService(WatchedStockRepository repo, StockSymbolRepository stockSymbolRepository) {
@@ -73,7 +64,8 @@ public class WatchedStockService {
 	}
 
     public List<WatchedStock> getWatchedStocks() {
-        return repository.findAll();
+        // return repository.findAll();
+        return repository.findByEndWatch(null);
     }
 
     public void deleteWatchedStocks(Integer id) {
