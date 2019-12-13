@@ -50,9 +50,6 @@ public class StockTransactionService {
              stockTransactionRepository.save(stockTransaction);
         }
 
-  //      StockTransaction transactionFromDB = stockTransactionRepository.findBySymbol(
-    //            stockTransaction.getStockSymbol().getSymbol());
-
         return stockTransaction;
     }
 

@@ -8,12 +8,13 @@ import com.dmt.stockpicker.repository.WatchedStockRepository;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -26,32 +27,26 @@ import java.time.LocalDate;
 import java.util.TreeMap;
 import java.util.Date;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WatchedStockServiceTest {
 
-    @MockBean
+    @Mock
     private RestTemplate restTemplate;
 
-    @MockBean
+    @Mock
     private WatchedStockRepository watchedStockRepository;
 
-    @MockBean
+    @Mock
     private StockSymbolRepository symbolRepository;
 
     @InjectMocks
-    @Spy
     private WatchedStockService watchedStockService;
 
+    @Ignore
     @Before
     public void setup(){
-        this.watchedStockRepository = mock(WatchedStockRepository.class);
-        this.symbolRepository = mock(StockSymbolRepository.class);
-        // this.watchedStockService = new WatchedStockService( watchedStockRepository, symbolRepository, restTemplate);
-        this.watchedStockService = new WatchedStockService( watchedStockRepository, symbolRepository);
-
     }
 
     @Test
@@ -85,7 +80,7 @@ public class WatchedStockServiceTest {
         Assert.assertEquals(watchedStockExpected,actual );
     }
 
-    // @Test
+     @Test
     // TODO: fix mockito for restTemplate.getForEntity
     public void testGetRecentStockValuesMockedEndPoint() {
         // Given
@@ -107,17 +102,18 @@ public class WatchedStockServiceTest {
         ResponseEntity<String> response = new ResponseEntity<String>(mockedReturn , HttpStatus.ACCEPTED);
 
        
-        Mockito
-             .when(restTemplate.getForEntity(
-                ArgumentMatchers.anyString(),
-                ArgumentMatchers.any(Class.class)
+        Mockito.when(restTemplate.getForEntity(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.any(Class.class)
                 ))
              .thenReturn(response);
         
         // When
         TreeMap<Date, DailyStockData> watchedStockActual = watchedStockService.getRecentStockValues(stockSymbol);
+
+        System.out.println( watchedStockActual.firstEntry().getValue().getOpenAmount());
         
-        //TODO: breack into seperate tests
+        //TODO: breck into seperate tests
         // Then
         Assert.assertEquals(0, watchedStockActual.firstEntry().getValue().getOpenAmount().compareTo(expectedOpen)); 
         Assert.assertEquals(0, watchedStockActual.firstEntry().getValue().getCloseAmount().compareTo(expectedClose));
@@ -126,4 +122,5 @@ public class WatchedStockServiceTest {
         Assert.assertEquals(0, watchedStockActual.firstEntry().getValue().getVolume().compareTo(expectedVol));        
 
     }
+
 }

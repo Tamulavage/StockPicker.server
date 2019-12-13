@@ -25,16 +25,14 @@ import java.util.Iterator;
 
 @Service
 public class WatchedStockService {
+    @Autowired
     private WatchedStockRepository repository;
+    @Autowired
     private StockSymbolRepository stockSymbolRepository;
 
-    private RestTemplate restTemplate = new RestTemplate();
-
     @Autowired
-    public WatchedStockService(WatchedStockRepository repo, StockSymbolRepository stockSymbolRepository) {
-        this.repository = repo;
-        this.stockSymbolRepository = stockSymbolRepository;
-    }
+    private RestTemplate restTemplate; 
+
 
     public WatchedStock watchNewStock(WatchedStock watchedStock) {
         StockSymbol stockSymbol = watchedStock.getStockSymbol();
