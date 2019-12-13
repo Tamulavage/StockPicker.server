@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -62,7 +61,6 @@ public class WatchedStockServiceTest {
         WatchedStock actual = watchedStockService.watchNewStock(watchedStock);
 
         Assert.assertEquals(watchedStockExpected,actual );
-
     }
 
     @Test
@@ -81,7 +79,6 @@ public class WatchedStockServiceTest {
     }
 
      @Test
-    // TODO: fix mockito for restTemplate.getForEntity
     public void testGetRecentStockValuesMockedEndPoint() {
         // Given
         String stockSymbol = "abc";
@@ -101,7 +98,6 @@ public class WatchedStockServiceTest {
                                 + "}}}";
         ResponseEntity<String> response = new ResponseEntity<String>(mockedReturn , HttpStatus.ACCEPTED);
 
-       
         Mockito.when(restTemplate.getForEntity(
             ArgumentMatchers.anyString(),
             ArgumentMatchers.any(Class.class)
@@ -113,7 +109,6 @@ public class WatchedStockServiceTest {
 
         System.out.println( watchedStockActual.firstEntry().getValue().getOpenAmount());
         
-        //TODO: breck into seperate tests
         // Then
         Assert.assertEquals(0, watchedStockActual.firstEntry().getValue().getOpenAmount().compareTo(expectedOpen)); 
         Assert.assertEquals(0, watchedStockActual.firstEntry().getValue().getCloseAmount().compareTo(expectedClose));
