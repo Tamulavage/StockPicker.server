@@ -1,7 +1,6 @@
 package com.dmt.stockpicker.controller;
 
 import com.dmt.stockpicker.model.UserProfile;
-import com.dmt.stockpicker.repository.UserProfileRepository;
 import com.dmt.stockpicker.services.UserProfileService;
 
 import org.junit.Assert;
@@ -16,9 +15,6 @@ import org.springframework.http.ResponseEntity;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserProfileControllerTest {
-
-    // @MockBean
-    // private UserProfileRepository userProfileRepository;
 
     private UserProfileController controller;
 
