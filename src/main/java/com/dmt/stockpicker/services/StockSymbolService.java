@@ -30,7 +30,7 @@ public class StockSymbolService {
         stockSymbolRepository.deleteById(id);
     }
 
-    public List<StockSymbol> newAllCurrentStockSymbols() {
+    public List<StockSymbol> allCurrentStockSymbols() {
         return stockSymbolRepository.findAll();
     }
 }

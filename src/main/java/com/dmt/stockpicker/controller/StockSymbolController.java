@@ -23,7 +23,7 @@ public class StockSymbolController {
 
     @GetMapping("/")
     public ResponseEntity<List<StockSymbol>> getAllCurrentStockSymbols(){
-        return new ResponseEntity<>(stockSymbolService.newAllCurrentStockSymbols(), HttpStatus.OK);
+        return new ResponseEntity<>(stockSymbolService.allCurrentStockSymbols(), HttpStatus.OK);
     }
 
     @PostMapping("/new")

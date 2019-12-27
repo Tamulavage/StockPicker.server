@@ -43,7 +43,7 @@ public class StockTransactionService {
 
         StockSymbol stockSymbol = stockTransaction.getStockSymbol();
         if(userHasCurrentStock(stockSymbol)){
-
+            // TODO: update qty
         }
         else {
              stockTransaction.setStockSymbol(stockSymbol);
