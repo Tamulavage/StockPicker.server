@@ -6,6 +6,7 @@ public class Indicator {
     StockSymbol stock;
     BigDecimal supportLine;
     BigDecimal resistanceLine;
+    BigDecimal pivotPoint;
     Integer timeFrameInDays;
     String suggestedAction;
     Integer indicatorStrength;
@@ -66,6 +67,21 @@ public class Indicator {
 
     public void setIndicatorStrength(Integer indicatorStrength) {
         this.indicatorStrength = indicatorStrength;
+    }
+
+    public BigDecimal getPivotPoint() {
+        return pivotPoint;
+    }
+
+    public void setPivotPoint(BigDecimal pivotPoint) {
+        this.pivotPoint = pivotPoint;
+    }
+
+    @Override
+    public String toString() {
+        return "Indicator [indicatorStrength=" + indicatorStrength + ", pivotPoint=" + pivotPoint + ", resistanceLine="
+                + resistanceLine + ", stock=" + stock + ", suggestedAction=" + suggestedAction + ", supportLine="
+                + supportLine + ", timeFrameInDays=" + timeFrameInDays + "]";
     }
 
 }

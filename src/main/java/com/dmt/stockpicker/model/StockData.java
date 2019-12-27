@@ -3,7 +3,7 @@ package com.dmt.stockpicker.model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class DailyStockData {
+public class StockData {
 
     private BigDecimal openAmount;
     private BigDecimal closeAmount;
@@ -11,7 +11,9 @@ public class DailyStockData {
     private BigDecimal lowAmount;
     private BigInteger volume;
 
-    public DailyStockData(BigDecimal openAmount,
+    public StockData() {};
+
+    public StockData(BigDecimal openAmount,
         BigDecimal closeAmount,
         BigDecimal highAmount,
         BigDecimal lowAmount,
@@ -61,5 +63,11 @@ public class DailyStockData {
 
     public void setVolume(BigInteger volume) {
         this.volume = volume;
+    }
+
+    @Override
+    public String toString() {
+        return "DailyStockData [openAmount=" + openAmount + ", closeAmount=" + closeAmount + ", highAmount=" + highAmount 
+                + ", lowAmount=" + lowAmount + ", volume=" + volume + "]";
     }
 }

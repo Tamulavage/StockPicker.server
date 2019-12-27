@@ -2,8 +2,8 @@ package com.dmt.stockpicker.services;
 
 import org.json.*;
 
-import com.dmt.stockpicker.model.DailyStockData;
 import com.dmt.stockpicker.model.Indicator;
+import com.dmt.stockpicker.model.StockIndicator;
 import com.dmt.stockpicker.model.StockSymbol;
 import com.dmt.stockpicker.model.WatchedStock;
 import com.dmt.stockpicker.repository.StockSymbolRepository;
@@ -15,16 +15,21 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import java.util.TreeMap;
-import java.util.Date;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 @Service
 public class WatchedStockService {
+    
+    final BigDecimal zero = new BigDecimal("0");
+    final BigDecimal two = new BigDecimal("2");
+    final BigDecimal three = new BigDecimal("2");
+
     @Autowired
     private WatchedStockRepository repository;
     @Autowired
@@ -55,14 +60,11 @@ public class WatchedStockService {
     public WatchedStock stopWatchingStock(String stockName) {
         StockSymbol stockSymbol = stockSymbolRepository.findBySymbol(stockName);
         WatchedStock watchedStock = repository.findByStockSymbolId(stockSymbol.getId());
-        // WatchedStock watchedStock = new WatchedStock();
         watchedStock.setEndWatch(LocalDate.now());
         return repository.save(watchedStock);
-        // return null;
 	}
 
     public List<WatchedStock> getWatchedStocks() {
-        // return repository.findAll();
         return repository.findByEndWatch(null);
     }
 
@@ -75,8 +77,8 @@ public class WatchedStockService {
 
         try{
           StockSymbol stockSymbol = getStockSymbolById(id);
-          TreeMap<Date,DailyStockData>  dailyStock = getRecentStockValues(stockSymbol.getSymbol());
-          Indicator indicator = getIndicator(dailyStock, stockSymbol);
+          ArrayList<StockIndicator> dailyStock = getRecentStockValues(stockSymbol.getSymbol());
+          Indicator indicator = getCurentIndicator(dailyStock, stockSymbol);
 
           return indicator;
         }
@@ -86,18 +88,69 @@ public class WatchedStockService {
         }
     }
 
-    private Indicator getIndicator(TreeMap<Date,DailyStockData> dailyStock, StockSymbol stock) {
+    private Indicator getCurentIndicator(ArrayList<StockIndicator>  dailyStock, StockSymbol stock) {        
+        
+        List<StockIndicator> dailyIndicators = populateIndicatorsData(dailyStock);
+
         // TODO: Run indicator here: Remove hard coded values
         Indicator indicator = new Indicator();
+        indicator.setSuggestedAction("N/A");
         indicator.setIndicatorStrength(50);
-        indicator.setResistanceLine(new BigDecimal("100.5"));
-        indicator.setSupportLine(new BigDecimal("100"));
-        indicator.setSuggestedAction("Stay");
-
         indicator.setStock(stock);
 
         return indicator;
     }
+
+    private BigDecimal idPivotPoint(StockIndicator pivotRawData){
+        // Pivot point (PP) = (High + Low + Close) / 3
+        BigDecimal pivotPoint = zero;
+        pivotPoint = pivotPoint.add(pivotRawData.getHighAmount());
+        pivotPoint = pivotPoint.add(pivotRawData.getLowAmount());
+        pivotPoint = pivotPoint.add(pivotRawData.getCloseAmount());
+        // greater then 0, OK to Divide
+        if(pivotPoint.compareTo(zero) == 1){
+            pivotPoint = pivotPoint.divide(three, RoundingMode.CEILING);
+        }
+        return pivotPoint;
+    }
+
+    private BigDecimal idSupportLine(BigDecimal pivotPoint, BigDecimal highAmount) {
+        // First support (S1) = (2 x PP) – High.
+        return two.multiply(pivotPoint).subtract(highAmount);
+    }
+
+    private BigDecimal idResistanceLine(BigDecimal pivotPoint, BigDecimal lowAmount) {
+        // First resistance (R1) = (2 x PP) – Low.
+        return two.multiply(pivotPoint).subtract(lowAmount);
+    }
+
+    public ArrayList<StockIndicator> populateIndicatorsData(ArrayList<StockIndicator>  dailyStock){        
+        Integer dataSetSize = dailyStock.size();
+
+        for(int i=0; i<dataSetSize-1; i++){
+            Indicator indicator = new Indicator();
+
+            // TODO: seperate functions
+            indicator.setPivotPoint(idPivotPoint(dailyStock.get(i+1)));
+            indicator.setSupportLine(idSupportLine(indicator.getPivotPoint(), dailyStock.get(i+1).getHighAmount()));
+            indicator.setResistanceLine(idResistanceLine(indicator.getPivotPoint(), dailyStock.get(i+1).getLowAmount()));
+        
+            dailyStock.get(i).setIndicator(indicator);
+        }
+
+        // for(int i=0; i<dataSetSize; i++){
+        //     System.out.println(dailyStock.get(i));
+        // }    
+
+    
+        // TODO: r2/p2, r3/p3
+        // Second resistance (R2) = PP + (High – Low) Second support (S2) = PP – (High – Low)
+        // Third resistance (R3) = High + 2(PP – Low) Third support (S3) = Low – 2(High – PP)
+
+        // TODO: MACD Lines
+        return dailyStock;
+    }
+
 
     private StockSymbol getStockSymbolById(Integer id) throws Exception{
 
@@ -110,11 +163,11 @@ public class WatchedStockService {
         }
     }
 
-    public TreeMap<Date,DailyStockData>  getRecentStockValues(String stockName){
+    public ArrayList<StockIndicator>  getRecentStockValues(String stockName){        
         
         String apiUri =  "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=";
         String apiKey = "&apikey=HNX418W2U7ARUI2F";
-        TreeMap<Date,DailyStockData>  stockValuesLastHundred = new TreeMap<Date,DailyStockData>();
+        ArrayList<StockIndicator> stockValuesLastHundred = new ArrayList<StockIndicator>();
 
         String apiUrl = apiUri+stockName+apiKey;
 
@@ -124,12 +177,12 @@ public class WatchedStockService {
           JSONObject timeDailyDataAll = new JSONObject(response.getBody());
           JSONObject timeSeries = timeDailyDataAll.getJSONObject("Time Series (Daily)");
           Iterator<String> keys = timeSeries.keys();
-          SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+          DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
           while(keys.hasNext()){
             String stringDateOfData = (String)keys.next();
             try{
-                Date date = format.parse(stringDateOfData);
+                LocalDate date = LocalDate.parse(stringDateOfData, format);
 
                 JSONObject valueOfData = timeSeries.getJSONObject(stringDateOfData);
 
@@ -139,13 +192,14 @@ public class WatchedStockService {
                 BigDecimal lowAmount = new BigDecimal(valueOfData.get("3. low").toString());
                 BigInteger volume = new BigInteger(valueOfData.get("5. volume").toString());
 
-                DailyStockData dailyStockData = new DailyStockData(openAmount, 
+                StockIndicator stockData = new StockIndicator(openAmount, 
                     closeAmount, 
                     highAmount, 
                     lowAmount, 
-                    volume);
+                    volume,
+                    date);
 
-                stockValuesLastHundred.put(date, dailyStockData);
+                stockValuesLastHundred.add(stockData);
             }
             catch (Exception e) {
                 e.getMessage();
