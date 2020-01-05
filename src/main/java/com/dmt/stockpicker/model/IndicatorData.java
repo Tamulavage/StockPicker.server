@@ -1,20 +1,24 @@
 package com.dmt.stockpicker.model;
 import java.math.BigDecimal;
 
-public class Indicator {
+public class IndicatorData {
 
+    // TODO: Move Stock Symbol to StockData
     StockSymbol stock;
     BigDecimal supportLine;
     BigDecimal resistanceLine;
     BigDecimal pivotPoint;
     Integer timeFrameInDays;
-    String suggestedAction;
-    Integer indicatorStrength;
+    BigDecimal emaShort;
+    BigDecimal emaLong;
+    BigDecimal MACD;
 
-    public Indicator(){   
+    public IndicatorData(){   
+        setEmaShort(new BigDecimal("0"));
+        setEmaLong(new BigDecimal("0"));
     }
     
-    public Indicator(StockSymbol stock, BigDecimal supportLine, BigDecimal resistanceLine, Integer timeFrameInDays) {
+    public IndicatorData(StockSymbol stock, BigDecimal supportLine, BigDecimal resistanceLine, Integer timeFrameInDays) {
         this.stock = stock;
         this.supportLine = supportLine;
         this.resistanceLine = resistanceLine;
@@ -53,22 +57,6 @@ public class Indicator {
         this.timeFrameInDays = timeFrameInDays;
     }
 
-    public String getSuggestedAction() {
-        return suggestedAction;
-    }
-
-    public void setSuggestedAction(String suggestedAction) {
-        this.suggestedAction = suggestedAction;
-    }
-
-    public Integer getIndicatorStrength() {
-        return indicatorStrength;
-    }
-
-    public void setIndicatorStrength(Integer indicatorStrength) {
-        this.indicatorStrength = indicatorStrength;
-    }
-
     public BigDecimal getPivotPoint() {
         return pivotPoint;
     }
@@ -77,10 +65,34 @@ public class Indicator {
         this.pivotPoint = pivotPoint;
     }
 
+    public BigDecimal getEmaShort() {
+        return emaShort;
+    }
+
+    public void setEmaShort(BigDecimal emaShort) {
+        this.emaShort = emaShort;
+    }
+
+    public BigDecimal getEmaLong() {
+        return emaLong;
+    }
+
+    public void setEmaLong(BigDecimal emaLong) {
+        this.emaLong = emaLong;
+    }
+
+    public BigDecimal getMACD() {
+        return MACD;
+    }
+
+    public void setMACD(BigDecimal mACD) {
+        MACD = mACD;
+    }
+
     @Override
     public String toString() {
-        return "Indicator [indicatorStrength=" + indicatorStrength + ", pivotPoint=" + pivotPoint + ", resistanceLine="
-                + resistanceLine + ", stock=" + stock + ", suggestedAction=" + suggestedAction + ", supportLine="
+        return "IndicatorData [MACD=" + MACD + ", emaLong=" + emaLong + ", emaShort=" + emaShort + ", pivotPoint="
+                + pivotPoint + ", resistanceLine=" + resistanceLine + ", stock=" + stock + ", supportLine="
                 + supportLine + ", timeFrameInDays=" + timeFrameInDays + "]";
     }
 

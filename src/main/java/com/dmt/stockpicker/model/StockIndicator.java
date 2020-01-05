@@ -6,10 +6,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class StockIndicator extends StockData {
-    private Indicator indicator;
+    private IndicatorData indicatorData;
     private LocalDateTime localDateTime;
     private LocalDate localDate;
-
     
     public StockIndicator(BigDecimal openAmount,
         BigDecimal closeAmount,
@@ -32,12 +31,12 @@ public class StockIndicator extends StockData {
     public StockIndicator(){
     }
 
-    public Indicator getIndicator() {
-        return indicator;
+    public IndicatorData getIndicator() {
+        return indicatorData;
     }
 
-    public void setIndicator(Indicator indicator) {
-        this.indicator = indicator;
+    public void setIndicator(IndicatorData indicatorData) {
+        this.indicatorData = indicatorData;
     }
 
     public LocalDateTime getLocalDateTime() {
@@ -58,7 +57,7 @@ public class StockIndicator extends StockData {
 
     @Override
     public String toString() {
-        return "StockIndicator [" + indicator + ", localDate=" + localDate + ", localDateTime="
+        return "StockIndicator [" + indicatorData + ", localDate=" + localDate + ", localDateTime="
                 + localDateTime + "] " + super.toString();
     }
 

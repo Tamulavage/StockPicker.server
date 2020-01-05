@@ -43,6 +43,9 @@ public class WatchedStockServiceTest {
     @InjectMocks
     private WatchedStockService watchedStockService;
 
+    
+    ArrayList<StockIndicator> dailyStock = new ArrayList<StockIndicator>();
+
     @Ignore
     @Before
     public void setup(){
@@ -80,41 +83,37 @@ public class WatchedStockServiceTest {
 
     @Test
     public void populateDailyIndicatorDataTest() {
-        // given        
-        ArrayList<StockIndicator> dailyStock = new ArrayList<StockIndicator>();
-        StockIndicator[] dailyStockData = new StockIndicator[3];
-        dailyStockData[0] = new StockIndicator(
-                new BigDecimal("3"),    // open
-                new BigDecimal("9"),    // close
-                new BigDecimal("10"),   // high
-                new BigDecimal("1"),    // low
-                new BigInteger("10000"));   // vol
-        dailyStockData[1] = new StockIndicator(
-                new BigDecimal("1"),    
-                new BigDecimal("9"), 
-                new BigDecimal("15"), 
-                new BigDecimal("15"), 
-                new BigInteger("10200"));    
-        dailyStockData[2] = new StockIndicator(
-                new BigDecimal("15"),
-                new BigDecimal("11"), 
-                new BigDecimal("15"), 
-                new BigDecimal("1"), 
-                new BigInteger("20000"));   
-
-        for(int i=0; i< 3; i++){
-            dailyStock.add( dailyStockData[i]);
+        // given    
+        if(dailyStock.size() == 0){
+            populateStockIndicatorData();
         }
 
         BigDecimal expectedResitance = new BigDecimal("27");
         BigDecimal expectedSupport = new BigDecimal("13");    
 
         // When
-        List<StockIndicator> actual = watchedStockService.populateIndicatorsData(dailyStock);
+        List<StockIndicator> actual = watchedStockService.populateTrendLines(dailyStock);
 
         // then
         Assert.assertEquals(expectedResitance, actual.get(1).getIndicator().getResistanceLine());
         Assert.assertEquals(expectedSupport, actual.get(1).getIndicator().getSupportLine());
+    }
+
+    @Test
+    public void populateRawIndicatorDataTest(){
+        // given
+        if(dailyStock.size() == 0){
+            populateStockIndicatorData();
+        }
+        BigDecimal expectedMACD = new BigDecimal("0.093");
+        BigDecimal expectedEMALong = new BigDecimal("8.964");   
+
+        // When
+        List<StockIndicator> actual = watchedStockService.populateRawIndicatorData(dailyStock);
+
+        // Then
+        Assert.assertEquals(expectedMACD, actual.get(0).getIndicator().getMACD());
+        Assert.assertEquals(expectedEMALong, actual.get(0).getIndicator().getEmaLong());
     }
 
      @Test
@@ -154,5 +153,134 @@ public class WatchedStockServiceTest {
         Assert.assertEquals(0, watchedStockActual.get(0).getVolume().compareTo(expectedVol));  
 
     }
+
+    
+    private void populateStockIndicatorData(){
+        Integer testDataAmount = 20;
+        StockIndicator[] dailyStockData = new StockIndicator[testDataAmount];
+        dailyStockData[0] = new StockIndicator(
+                new BigDecimal("3"),    // open
+                new BigDecimal("9"),    // close
+                new BigDecimal("10"),   // high
+                new BigDecimal("1"),    // low
+                new BigInteger("10000"));   // vol
+        dailyStockData[1] = new StockIndicator(
+                new BigDecimal("1"),    
+                new BigDecimal("9"), 
+                new BigDecimal("15"), 
+                new BigDecimal("15"), 
+                new BigInteger("10200"));    
+        dailyStockData[2] = new StockIndicator(
+                new BigDecimal("15"),
+                new BigDecimal("11"), 
+                new BigDecimal("15"), 
+                new BigDecimal("1"), 
+                new BigInteger("20000"));  
+        dailyStockData[3] = new StockIndicator(
+            new BigDecimal("17"),    
+            new BigDecimal("9"), 
+            new BigDecimal("17"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200")); 
+        dailyStockData[4] = new StockIndicator(
+            new BigDecimal("9"),    
+            new BigDecimal("5"), 
+            new BigDecimal("9"), 
+            new BigDecimal(".2"), 
+            new BigInteger("152000")); 
+        dailyStockData[5] = new StockIndicator(
+            new BigDecimal("6"),    
+            new BigDecimal("9"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200")); 
+        dailyStockData[6] = new StockIndicator(
+            new BigDecimal("7"),    
+            new BigDecimal("9"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200")); 
+        dailyStockData[7] = new StockIndicator(
+            new BigDecimal("8"),    
+            new BigDecimal("9"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200")); 
+        dailyStockData[8] = new StockIndicator(
+            new BigDecimal("9"),    
+            new BigDecimal("9"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200")); 
+        dailyStockData[9] = new StockIndicator(
+            new BigDecimal("100"),    
+            new BigDecimal("9"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200")); 
+        dailyStockData[10] = new StockIndicator(
+            new BigDecimal("11"),    
+            new BigDecimal("9"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200")); 
+        dailyStockData[11] = new StockIndicator(
+            new BigDecimal("1"),    
+            new BigDecimal("9"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200")); 
+        dailyStockData[12] = new StockIndicator(
+            new BigDecimal("1"),    
+            new BigDecimal("9"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200"));    
+        dailyStockData[13] = new StockIndicator(
+            new BigDecimal("1"),    
+            new BigDecimal("9.5"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200"));    
+        dailyStockData[14] = new StockIndicator(
+            new BigDecimal("1"),    
+            new BigDecimal("10"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200"));
+        dailyStockData[15] = new StockIndicator(
+            new BigDecimal("1"),    
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200"));            
+        dailyStockData[16] = new StockIndicator(
+            new BigDecimal("1"),    
+            new BigDecimal("8"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("10200"));
+        dailyStockData[17] = new StockIndicator(
+            new BigDecimal("1"),    
+            new BigDecimal("7.5"), 
+            new BigDecimal("15"), 
+            new BigDecimal("15"), 
+            new BigInteger("112200"));
+        dailyStockData[18] = new StockIndicator(
+            new BigDecimal("1111"),    
+            new BigDecimal("10"), 
+            new BigDecimal("11111"), 
+            new BigDecimal("15"), 
+            new BigInteger("2200")); 
+        dailyStockData[19] = new StockIndicator(
+            new BigDecimal("5.5"),    
+            new BigDecimal("8.2"), 
+            new BigDecimal("11111"), 
+            new BigDecimal("152"), 
+            new BigInteger("2202220"));             
+        for(int i=0; i< testDataAmount; i++){
+            this.dailyStock.add( dailyStockData[i]);
+        }            
+    }    
 
 }
