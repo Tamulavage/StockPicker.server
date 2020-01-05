@@ -2,7 +2,8 @@ package com.dmt.stockpicker.services;
 
 import org.json.*;
 
-import com.dmt.stockpicker.model.Indicator;
+import com.dmt.stockpicker.configuration.Formulas;
+import com.dmt.stockpicker.model.IndicatorData;
 import com.dmt.stockpicker.model.StockIndicator;
 import com.dmt.stockpicker.model.StockSymbol;
 import com.dmt.stockpicker.model.WatchedStock;
@@ -38,7 +39,6 @@ public class WatchedStockService {
     @Autowired
     private RestTemplate restTemplate; 
 
-
     public WatchedStock watchNewStock(WatchedStock watchedStock) {
         StockSymbol stockSymbol = watchedStock.getStockSymbol();
         watchedStock.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
@@ -73,12 +73,13 @@ public class WatchedStockService {
         repository.delete(watchedStock);
     }
 
-    public Indicator analyzeWatchedStock(Integer id){
+    public IndicatorData analyzeWatchedStock(Integer id){
 
         try{
           StockSymbol stockSymbol = getStockSymbolById(id);
           ArrayList<StockIndicator> dailyStock = getRecentStockValues(stockSymbol.getSymbol());
-          Indicator indicator = getCurentIndicator(dailyStock, stockSymbol);
+          dailyStock = populateRawIndicatorData(dailyStock);
+          IndicatorData indicator = getCurentIndicator(dailyStock);
 
           return indicator;
         }
@@ -88,17 +89,29 @@ public class WatchedStockService {
         }
     }
 
-    private Indicator getCurentIndicator(ArrayList<StockIndicator>  dailyStock, StockSymbol stock) {        
+    public ArrayList<StockIndicator> populateRawIndicatorData(ArrayList<StockIndicator> dailyStock){
+        List<StockIndicator> dailyIndicators = populateTrendLines(dailyStock);
+        dailyIndicators = populateMACD(dailyIndicators);
+
+        dailyIndicators.forEach((x) -> System.out.println(x));
+        return (ArrayList<StockIndicator>) dailyIndicators;
+    }
+
+    private List<StockIndicator> populateMACD(List<StockIndicator> dailyIndicators){
+
+        dailyIndicators = Formulas.populateExponentialMovingAverage(5, dailyIndicators, true);
+        dailyIndicators = Formulas.populateExponentialMovingAverage(10, dailyIndicators, false); 
+        dailyIndicators = Formulas.populateMACD(dailyIndicators);         
+
+        return dailyIndicators;
+    }
+
+    private IndicatorData getCurentIndicator(ArrayList<StockIndicator>  dailyStock) {        
         
-        List<StockIndicator> dailyIndicators = populateIndicatorsData(dailyStock);
+        // TODO: Run indicator here:
+        IndicatorData indicator = new IndicatorData();
 
-        // TODO: Run indicator here: Remove hard coded values
-        Indicator indicator = new Indicator();
-        indicator.setSuggestedAction("N/A");
-        indicator.setIndicatorStrength(50);
-        indicator.setStock(stock);
-
-        return indicator;
+        return null;
     }
 
     private BigDecimal idPivotPoint(StockIndicator pivotRawData){
@@ -112,6 +125,10 @@ public class WatchedStockService {
             pivotPoint = pivotPoint.divide(three, RoundingMode.CEILING);
         }
         return pivotPoint;
+        // other P options
+        //  P = (O + H + L + C) / 4
+        //  P = ((Current O) + Previous(H + L + C)) / 4
+        //  P = ((Today’s Open) + Yesterday’s (H + L + C)) / 4
     }
 
     private BigDecimal idSupportLine(BigDecimal pivotPoint, BigDecimal highAmount) {
@@ -124,30 +141,23 @@ public class WatchedStockService {
         return two.multiply(pivotPoint).subtract(lowAmount);
     }
 
-    public ArrayList<StockIndicator> populateIndicatorsData(ArrayList<StockIndicator>  dailyStock){        
+    public ArrayList<StockIndicator> populateTrendLines(ArrayList<StockIndicator>  dailyStock){        
         Integer dataSetSize = dailyStock.size();
 
         for(int i=0; i<dataSetSize-1; i++){
-            Indicator indicator = new Indicator();
+            IndicatorData indicator = new IndicatorData();
 
-            // TODO: seperate functions
             indicator.setPivotPoint(idPivotPoint(dailyStock.get(i+1)));
             indicator.setSupportLine(idSupportLine(indicator.getPivotPoint(), dailyStock.get(i+1).getHighAmount()));
             indicator.setResistanceLine(idResistanceLine(indicator.getPivotPoint(), dailyStock.get(i+1).getLowAmount()));
         
             dailyStock.get(i).setIndicator(indicator);
         }
-
-        // for(int i=0; i<dataSetSize; i++){
-        //     System.out.println(dailyStock.get(i));
-        // }    
-
     
         // TODO: r2/p2, r3/p3
         // Second resistance (R2) = PP + (High – Low) Second support (S2) = PP – (High – Low)
         // Third resistance (R3) = High + 2(PP – Low) Third support (S3) = Low – 2(High – PP)
 
-        // TODO: MACD Lines
         return dailyStock;
     }
 
@@ -208,6 +218,4 @@ public class WatchedStockService {
 
         return stockValuesLastHundred;
     }
-
-
 }
