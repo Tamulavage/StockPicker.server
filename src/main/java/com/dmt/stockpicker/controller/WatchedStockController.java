@@ -1,6 +1,7 @@
 package com.dmt.stockpicker.controller;
 
 import com.dmt.stockpicker.model.IndicatorData;
+import com.dmt.stockpicker.model.MainIndicator;
 import com.dmt.stockpicker.model.WatchedStock;
 import com.dmt.stockpicker.services.WatchedStockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class WatchedStockController {
     }
 
     @GetMapping("/analyzeWatchedStock/{id}")
-    public ResponseEntity<IndicatorData> analyzeWatchedStocks(@PathVariable Integer id) {
+    public ResponseEntity<MainIndicator> analyzeWatchedStocks(@PathVariable Integer id) {
         return new ResponseEntity<>(watchedStockService.analyzeWatchedStock(id), HttpStatus.OK);
     }
 

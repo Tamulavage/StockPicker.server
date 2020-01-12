@@ -3,10 +3,13 @@ package com.dmt.stockpicker.services;
 import org.json.*;
 
 import com.dmt.stockpicker.configuration.Formulas;
+import com.dmt.stockpicker.enums.Suggestion;
 import com.dmt.stockpicker.model.IndicatorData;
+import com.dmt.stockpicker.model.MainIndicator;
 import com.dmt.stockpicker.model.StockIndicator;
 import com.dmt.stockpicker.model.StockSymbol;
 import com.dmt.stockpicker.model.WatchedStock;
+import com.dmt.stockpicker.model.sorters.SortDailyStockByDay;
 import com.dmt.stockpicker.repository.StockSymbolRepository;
 import com.dmt.stockpicker.repository.WatchedStockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,13 +76,13 @@ public class WatchedStockService {
         repository.delete(watchedStock);
     }
 
-    public IndicatorData analyzeWatchedStock(Integer id){
+    public MainIndicator analyzeWatchedStock(Integer id){
 
         try{
           StockSymbol stockSymbol = getStockSymbolById(id);
           ArrayList<StockIndicator> dailyStock = getRecentStockValues(stockSymbol.getSymbol());
           dailyStock = populateRawIndicatorData(dailyStock);
-          IndicatorData indicator = getCurentIndicator(dailyStock);
+          MainIndicator indicator = getCurentIndicator(dailyStock);
 
           return indicator;
         }
@@ -93,12 +96,12 @@ public class WatchedStockService {
         List<StockIndicator> dailyIndicators = populateTrendLines(dailyStock);
         dailyIndicators = populateMACD(dailyIndicators);
 
-        dailyIndicators.forEach((x) -> System.out.println(x));
+        // dailyIndicators.forEach((x) -> System.out.println(x));
         return (ArrayList<StockIndicator>) dailyIndicators;
     }
 
     private List<StockIndicator> populateMACD(List<StockIndicator> dailyIndicators){
-
+        // TODO: Change fast and slowto variables, get from paramter
         dailyIndicators = Formulas.populateExponentialMovingAverage(5, dailyIndicators, true);
         dailyIndicators = Formulas.populateExponentialMovingAverage(10, dailyIndicators, false); 
         dailyIndicators = Formulas.populateMACD(dailyIndicators);         
@@ -106,12 +109,16 @@ public class WatchedStockService {
         return dailyIndicators;
     }
 
-    private IndicatorData getCurentIndicator(ArrayList<StockIndicator>  dailyStock) {        
+    private MainIndicator getCurentIndicator(ArrayList<StockIndicator>  dailyStock) {        
         
         // TODO: Run indicator here:
-        IndicatorData indicator = new IndicatorData();
+        MainIndicator indicator = new MainIndicator();
+        if(dailyStock.get(0).getIndicator().getMACD().compareTo(zero)>0)
+            indicator.setSuggest(Suggestion.BUY);
+        else if(dailyStock.get(0).getIndicator().getMACD().compareTo(zero)<0)
+            indicator.setSuggest(Suggestion.SELL);
 
-        return null;
+        return indicator;
     }
 
     private BigDecimal idPivotPoint(StockIndicator pivotRawData){
@@ -157,7 +164,6 @@ public class WatchedStockService {
         // TODO: r2/p2, r3/p3
         // Second resistance (R2) = PP + (High – Low) Second support (S2) = PP – (High – Low)
         // Third resistance (R3) = High + 2(PP – Low) Third support (S3) = Low – 2(High – PP)
-
         return dailyStock;
     }
 
@@ -210,12 +216,14 @@ public class WatchedStockService {
                     date);
 
                 stockValuesLastHundred.add(stockData);
+                
             }
             catch (Exception e) {
                 e.getMessage();
             }
           }
 
+        stockValuesLastHundred.sort(new SortDailyStockByDay());
         return stockValuesLastHundred;
     }
 }

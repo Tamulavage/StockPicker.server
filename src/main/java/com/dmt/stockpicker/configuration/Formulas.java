@@ -8,12 +8,15 @@ import java.util.List;
 import com.dmt.stockpicker.model.IndicatorData;
 import com.dmt.stockpicker.model.StockIndicator;
 
+// TODO: Code this
+// The MACD smooth line (also known as signal line) is the 9 day exponential moving average (EMA) of the MACD
+
 public abstract class Formulas {
 
     public static BigDecimal calculateSimpleMovingAverage(Integer timeFrameInDays, List<StockIndicator> stockIndicatorData){
         //SUM of closing for timeFrameInDays days dividedBy (timeFrameInDays days )
         BigDecimal sumOfClosing = new BigDecimal("0");
-        for(int i=0; i<timeFrameInDays; i++){
+        for(int i=0; i<timeFrameInDays && i<stockIndicatorData.size(); i++){
             sumOfClosing = sumOfClosing.add(stockIndicatorData.get(i).getCloseAmount());
         }
         return sumOfClosing.divide(BigDecimal.valueOf(timeFrameInDays), RoundingMode.DOWN);
@@ -24,6 +27,7 @@ public abstract class Formulas {
                                                                         Boolean EMAshort){
         // {close - EMA(previousDay)} * multiplier + EMA(PreviousDay)
         // NOTE: for initial starting point, use SMA versus EMA(PreviousDay)
+        // TODO: need to change to update all records, not just the count in days
         for(int i=timeFrameInDays-1; i>=0 ;i--){
             StockIndicator stockIndicator = stockIndicatorData.get(i);
             IndicatorData indicatorData = stockIndicatorData.get(i).getIndicator();
@@ -60,7 +64,6 @@ public abstract class Formulas {
         } 
         return stockIndicatorData;
     }
-
 
     public static List<StockIndicator> populateMACD(List<StockIndicator> stockIndicatorData){
         for(int i=0; i < stockIndicatorData.size();i++){
