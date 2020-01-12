@@ -1,6 +1,8 @@
 package com.dmt.stockpicker.services;
 
 import com.dmt.stockpicker.model.StockSymbol;
+import com.dmt.stockpicker.enums.Suggestion;
+import com.dmt.stockpicker.model.MainIndicator;
 import com.dmt.stockpicker.model.StockIndicator;
 import com.dmt.stockpicker.model.WatchedStock;
 import com.dmt.stockpicker.repository.StockSymbolRepository;
@@ -12,6 +14,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -25,6 +28,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -43,53 +47,52 @@ public class WatchedStockServiceTest {
     @InjectMocks
     private WatchedStockService watchedStockService;
 
-    
     ArrayList<StockIndicator> dailyStock = new ArrayList<StockIndicator>();
 
     @Ignore
     @Before
-    public void setup(){
+    public void setup() {
     }
 
     @Test
-    public void testAddWatchStock(){
+    public void testAddWatchStock() {
         String symbol = "test";
         StockSymbol stockSymbol = new StockSymbol(1, symbol);
-        WatchedStock watchedStock = new WatchedStock( null, null, stockSymbol );
-        WatchedStock watchedStockExpected = new WatchedStock(null, null, stockSymbol );
+        WatchedStock watchedStock = new WatchedStock(null, null, stockSymbol);
+        WatchedStock watchedStockExpected = new WatchedStock(null, null, stockSymbol);
 
         when(symbolRepository.findBySymbol(symbol)).thenReturn(stockSymbol);
         when(watchedStockRepository.save(watchedStock)).thenReturn(watchedStockExpected);
 
         WatchedStock actual = watchedStockService.watchNewStock(watchedStock);
 
-        Assert.assertEquals(watchedStockExpected,actual );
+        Assert.assertEquals(watchedStockExpected, actual);
     }
 
     @Test
-    public void testEndWatchStock(){
+    public void testEndWatchStock() {
         String symbol = "test";
         StockSymbol stockSymbol = new StockSymbol(1, symbol);
-        WatchedStock watchedStock = new WatchedStock( null, null, stockSymbol );
-        WatchedStock watchedStockExpected = new WatchedStock(null, LocalDate.now(), stockSymbol );
+        WatchedStock watchedStock = new WatchedStock(null, null, stockSymbol);
+        WatchedStock watchedStockExpected = new WatchedStock(null, LocalDate.now(), stockSymbol);
 
         when(watchedStockRepository.getOne(watchedStock.getId())).thenReturn(watchedStock);
         when(watchedStockRepository.save(watchedStock)).thenReturn(watchedStockExpected);
 
         WatchedStock actual = watchedStockService.stopWatchingStock(watchedStock.getId());
 
-        Assert.assertEquals(watchedStockExpected,actual );
+        Assert.assertEquals(watchedStockExpected, actual);
     }
 
     @Test
     public void populateDailyIndicatorDataTest() {
-        // given    
-        if(dailyStock.size() == 0){
+        // given
+        if (dailyStock.size() == 0) {
             populateStockIndicatorData();
         }
 
         BigDecimal expectedResitance = new BigDecimal("27");
-        BigDecimal expectedSupport = new BigDecimal("13");    
+        BigDecimal expectedSupport = new BigDecimal("13");
 
         // When
         List<StockIndicator> actual = watchedStockService.populateTrendLines(dailyStock);
@@ -100,13 +103,13 @@ public class WatchedStockServiceTest {
     }
 
     @Test
-    public void populateRawIndicatorDataTest(){
+    public void populateRawIndicatorDataTest() {
         // given
-        if(dailyStock.size() == 0){
+        if (dailyStock.size() == 0) {
             populateStockIndicatorData();
         }
         BigDecimal expectedMACD = new BigDecimal("0.093");
-        BigDecimal expectedEMALong = new BigDecimal("8.964");   
+        BigDecimal expectedEMALong = new BigDecimal("8.964");
 
         // When
         List<StockIndicator> actual = watchedStockService.populateRawIndicatorData(dailyStock);
@@ -116,8 +119,345 @@ public class WatchedStockServiceTest {
         Assert.assertEquals(expectedEMALong, actual.get(0).getIndicator().getEmaLong());
     }
 
+    
+    @Test
+    public void analyzeWatchedStockTestSell() {
+        // Given
+        MainIndicator expected = new MainIndicator();
+        expected.setSuggest(Suggestion.SELL);
+
+        StockSymbol dummyStockSymbol = new StockSymbol(2, "AAA");
+        Optional<StockSymbol> stockSymbol = Optional.of(dummyStockSymbol);
+        BDDMockito
+        .given(symbolRepository.findById(2))
+        .willReturn(stockSymbol);
+
+        String mockedReturn = "{\"Time Series (Daily)\": { "
+                                + "\"2019-10-05\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.2100) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(137.2500)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(135.8100)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(136.0700)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10190307") + "\""
+                                + "},"
+                             + "\"2019-10-04\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(138.0500) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(138.2300)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.0400)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(136.0700)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("9469028") + "\""
+                                + "},"
+                            + "\"2019-10-03\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(135.7000) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(137.5800)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(135.6000)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(136.9400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("9695164") + "\""
+                                + "},"  
+                            + "\"2019-10-02\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.2800) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(137.8600)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(135.8200)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(135.8800)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10545115") + "\""
+                                + "},"
+                             + "\"2019-10-01\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(136.5600) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(138.2700)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(136.5000)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(138.2300)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10238065") + "\""
+                                + "},"                   
+                            + "\"2019-09-30\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.5000) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.2300)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.0800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(138.3400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10386627") + "\""
+                                + "},"   
+                            + "\"2019-09-29\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(139.7900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(141.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(139.2650)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(141.0900)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10802713") + "\""
+                                + "},"     
+                            + "\"2019-09-28\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(138.5100) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.4800)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(138.2950)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.4000)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("7201567") + "\""
+                                + "},"                   
+                            + "\"2019-09-27\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(139.9000) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(140.0800)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(138.4700)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(138.6300)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6962744") + "\""
+                                + "},"   
+                            + "\"2019-09-26\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(139.3000) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.7700)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(138.6697)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.1400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("7868174") + "\""
+                                + "},"                                                                                                             
+                            + "\"2019-09-25\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"  
+                            + "\"2019-09-24\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"   
+                            + "\"2019-09-23\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"  
+                            + "\"2019-09-22\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"   
+                            + "\"2019-09-21\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"   
+                            + "\"2019-09-20\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"   
+                            + "\"2019-09-19\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"  
+                            + "\"2019-09-18\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"  
+                            + "\"2019-09-17\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"                                                                                                                                                                                                                                                                        
+                             + "\"2019-09-16\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""                              
+                                + "}}}"                                                                
+                                ;
+        ResponseEntity<String> response = new ResponseEntity<String>(mockedReturn , HttpStatus.ACCEPTED);
+        Mockito.when(restTemplate.getForEntity(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.any(Class.class)
+                ))
+             .thenReturn(response);
+
+        // When
+        MainIndicator actual = watchedStockService.analyzeWatchedStock(2);
+
+        // Then
+        Assert.assertEquals(expected.getSuggest(), actual.getSuggest());
+    }
+
+    @Test
+    public void analyzeWatchedStockTestBuy() {
+        // Given
+        MainIndicator expected = new MainIndicator();
+        expected.setSuggest(Suggestion.BUY);
+
+        StockSymbol dummyStockSymbol = new StockSymbol(2, "AAA");
+        Optional<StockSymbol> stockSymbol = Optional.of(dummyStockSymbol);
+        BDDMockito
+        .given(symbolRepository.findById(2))
+        .willReturn(stockSymbol);
+
+        String mockedReturn = "{\"Time Series (Daily)\": { "
+                                + "\"2019-10-05\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.2100) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(137.2500)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(135.8100)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(140.0700)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10190307") + "\""
+                                + "},"
+                             + "\"2019-10-04\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(138.0500) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(138.2300)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.0400)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(141.0700)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("9469028") + "\""
+                                + "},"
+                            + "\"2019-10-03\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(135.7000) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(137.5800)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(135.6000)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.9400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("9695164") + "\""
+                                + "},"  
+                            + "\"2019-10-02\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.2800) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(137.8600)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(135.8200)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(135.8800)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10545115") + "\""
+                                + "},"
+                             + "\"2019-10-01\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(136.5600) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(138.2700)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(136.5000)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(138.2300)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10238065") + "\""
+                                + "},"                   
+                            + "\"2019-09-30\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.5000) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.2300)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.0800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(138.3400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10386627") + "\""
+                                + "},"   
+                            + "\"2019-09-29\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(139.7900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(141.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(139.2650)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(141.0900)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("10802713") + "\""
+                                + "},"     
+                            + "\"2019-09-28\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(138.5100) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.4800)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(138.2950)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.4000)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("7201567") + "\""
+                                + "},"                   
+                            + "\"2019-09-27\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(139.9000) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(140.0800)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(138.4700)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(138.6300)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6962744") + "\""
+                                + "},"   
+                            + "\"2019-09-26\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(139.3000) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.7700)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(138.6697)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.1400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("7868174") + "\""
+                                + "},"                                                                                                             
+                            + "\"2019-09-25\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"  
+                            + "\"2019-09-24\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"   
+                            + "\"2019-09-23\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"  
+                            + "\"2019-09-22\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"   
+                            + "\"2019-09-21\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"   
+                            + "\"2019-09-20\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"   
+                            + "\"2019-09-19\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"  
+                            + "\"2019-09-18\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"  
+                            + "\"2019-09-17\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""
+                                + "},"                                                                                                                                                                                                                                                                        
+                             + "\"2019-09-16\": {"
+                                + "\"1. open\": \"" +  new BigDecimal(137.8900) + "\","
+                                + "\"2. high\": \"" + new BigDecimal(139.1000)  + "\","
+                                + "\"3. low\": \"" + new BigDecimal(137.7800)  + "\","
+                                + "\"4. close\": \"" + new BigDecimal(139.0400)  + "\","
+                                + "\"5. volume\": \"" + new BigInteger("6770873") + "\""                              
+                                + "}}}"                                                                
+                                ;
+        ResponseEntity<String> response = new ResponseEntity<String>(mockedReturn , HttpStatus.ACCEPTED);
+        Mockito.when(restTemplate.getForEntity(
+            ArgumentMatchers.anyString(),
+            ArgumentMatchers.any(Class.class)
+                ))
+             .thenReturn(response);
+
+        // When
+        MainIndicator actual = watchedStockService.analyzeWatchedStock(2);
+
+        // Then
+        Assert.assertEquals(expected.getSuggest(), actual.getSuggest());
+    }
+
      @Test
-    public void testGetRecentStockValuesMockedEndPoint() {
+    public void GetRecentStockValuesMockedEndPointTest() {
         // Given
         String stockSymbol = "abc";
         BigDecimal expectedClose  =  new BigDecimal(101.0000);
@@ -133,7 +473,14 @@ public class WatchedStockServiceTest {
                                 + "\"3. low\": \"" + expectedLow + "\","
                                 + "\"4. close\": \"" + expectedClose + "\","
                                 + "\"5. volume\": \"" + expectedVol + "\""
-                                + "}}}";
+                                + "},"
+                             + "\"2019-10-03\": {"
+                                + "\"1. open\": \"" + expectedOpen + "\","
+                                + "\"2. high\": \"" + expectedHigh + "\","
+                                + "\"3. low\": \"" + expectedLow + "\","
+                                + "\"4. close\": \"" + expectedClose + "\","
+                                + "\"5. volume\": \"" + expectedVol + "\""
+                                + "}}}" ;
         ResponseEntity<String> response = new ResponseEntity<String>(mockedReturn , HttpStatus.ACCEPTED);
 
         Mockito.when(restTemplate.getForEntity(

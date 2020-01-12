@@ -2,6 +2,7 @@ package com.dmt.stockpicker.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 
 public class StockData {
 
@@ -18,10 +19,12 @@ public class StockData {
         BigDecimal highAmount,
         BigDecimal lowAmount,
         BigInteger volume ){
-            this.openAmount = openAmount;
-            this.closeAmount = closeAmount;
-            this.highAmount = highAmount;
-            this.lowAmount = lowAmount;
+            MathContext roundAt4 = new MathContext(4);
+
+            this.openAmount = openAmount.round(roundAt4);
+            this.closeAmount = closeAmount.round(roundAt4);
+            this.highAmount = highAmount.round(roundAt4);
+            this.lowAmount = lowAmount.round(roundAt4);
             this.volume = volume;
     }
 
