@@ -62,8 +62,6 @@ public class WatchedStockService {
 
     public WatchedStock stopWatchingStock(String stockName) {
         StockSymbol stockSymbol = stockSymbolRepository.findBySymbol(stockName);
-        // WatchedStock watchedStock = repository.findByStockSymbolId(stockSymbol.getId());
-
         WatchedStock watchedStock = repository.findByStockSymbolIdAndEndWatchNull(stockSymbol.getId());
         watchedStock.setEndWatch(LocalDate.now());
         return repository.save(watchedStock);
