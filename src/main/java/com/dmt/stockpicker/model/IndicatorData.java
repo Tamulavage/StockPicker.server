@@ -3,8 +3,6 @@ import java.math.BigDecimal;
 
 public class IndicatorData {
 
-    // TODO: Move Stock Symbol to StockData
-    StockSymbol stock;
     BigDecimal supportLine;
     BigDecimal resistanceLine;
     BigDecimal pivotPoint;
@@ -18,19 +16,13 @@ public class IndicatorData {
         setEmaLong(new BigDecimal("0"));
     }
     
-    public IndicatorData(StockSymbol stock, BigDecimal supportLine, BigDecimal resistanceLine, Integer timeFrameInDays) {
-        this.stock = stock;
+    public IndicatorData(
+                    BigDecimal supportLine, 
+                    BigDecimal resistanceLine, 
+                    Integer timeFrameInDays) {
         this.supportLine = supportLine;
         this.resistanceLine = resistanceLine;
         this.timeFrameInDays = timeFrameInDays;
-    }
-
-    public StockSymbol getStock() {
-        return stock;
-    }
-
-    public void setStock(StockSymbol stock) {
-        this.stock = stock;
     }
 
     public BigDecimal getSupportLine() {
@@ -92,7 +84,7 @@ public class IndicatorData {
     @Override
     public String toString() {
         return "IndicatorData [MACD=" + MACD + ", emaLong=" + emaLong + ", emaShort=" + emaShort + ", pivotPoint="
-                + pivotPoint + ", resistanceLine=" + resistanceLine + ", stock=" + stock + ", supportLine="
+                + pivotPoint + ", resistanceLine=" + resistanceLine + ", supportLine="
                 + supportLine + ", timeFrameInDays=" + timeFrameInDays + "]";
     }
 

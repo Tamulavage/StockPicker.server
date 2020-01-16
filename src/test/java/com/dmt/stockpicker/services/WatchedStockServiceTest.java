@@ -49,9 +49,16 @@ public class WatchedStockServiceTest {
 
     ArrayList<StockIndicator> dailyStock = new ArrayList<StockIndicator>();
 
+    Integer fastEMA;
+    Integer slowEMA;
+    Integer stockID;
+
     @Ignore
     @Before
     public void setup() {
+        this.stockID = 2;
+        this.fastEMA = 5;
+        this.slowEMA = 10;
     }
 
     @Test
@@ -112,7 +119,7 @@ public class WatchedStockServiceTest {
         BigDecimal expectedEMALong = new BigDecimal("8.964");
 
         // When
-        List<StockIndicator> actual = watchedStockService.populateRawIndicatorData(dailyStock);
+        List<StockIndicator> actual = watchedStockService.populateRawIndicatorData(dailyStock, null, null);
 
         // Then
         Assert.assertEquals(expectedMACD, actual.get(0).getIndicator().getMACD());
@@ -126,10 +133,10 @@ public class WatchedStockServiceTest {
         MainIndicator expected = new MainIndicator();
         expected.setSuggest(Suggestion.SELL);
 
-        StockSymbol dummyStockSymbol = new StockSymbol(2, "AAA");
+        StockSymbol dummyStockSymbol = new StockSymbol(stockID, "AAA");
         Optional<StockSymbol> stockSymbol = Optional.of(dummyStockSymbol);
         BDDMockito
-        .given(symbolRepository.findById(2))
+        .given(symbolRepository.findById(stockID))
         .willReturn(stockSymbol);
 
         String mockedReturn = "{\"Time Series (Daily)\": { "
@@ -282,7 +289,7 @@ public class WatchedStockServiceTest {
              .thenReturn(response);
 
         // When
-        MainIndicator actual = watchedStockService.analyzeWatchedStock(2);
+        MainIndicator actual = watchedStockService.analyzeWatchedStock(stockID, slowEMA, fastEMA);
 
         // Then
         Assert.assertEquals(expected.getSuggest(), actual.getSuggest());
@@ -294,10 +301,10 @@ public class WatchedStockServiceTest {
         MainIndicator expected = new MainIndicator();
         expected.setSuggest(Suggestion.BUY);
 
-        StockSymbol dummyStockSymbol = new StockSymbol(2, "AAA");
+        StockSymbol dummyStockSymbol = new StockSymbol(stockID, "AAA");
         Optional<StockSymbol> stockSymbol = Optional.of(dummyStockSymbol);
         BDDMockito
-        .given(symbolRepository.findById(2))
+        .given(symbolRepository.findById(stockID))
         .willReturn(stockSymbol);
 
         String mockedReturn = "{\"Time Series (Daily)\": { "
@@ -450,7 +457,7 @@ public class WatchedStockServiceTest {
              .thenReturn(response);
 
         // When
-        MainIndicator actual = watchedStockService.analyzeWatchedStock(2);
+        MainIndicator actual = watchedStockService.analyzeWatchedStock(stockID, slowEMA, fastEMA);
 
         // Then
         Assert.assertEquals(expected.getSuggest(), actual.getSuggest());

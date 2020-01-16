@@ -42,8 +42,8 @@ public class WatchedStockController {
     }
 
     @GetMapping("/analyzeWatchedStock/{id}")
-    public ResponseEntity<MainIndicator> analyzeWatchedStocks(@PathVariable Integer id) {
-        return new ResponseEntity<>(watchedStockService.analyzeWatchedStock(id), HttpStatus.OK);
+    public ResponseEntity<MainIndicator> analyzeWatchedStocks(@PathVariable Integer id, Integer slowEMA, Integer fastEMA ) {
+        return new ResponseEntity<>(watchedStockService.analyzeWatchedStock(id, slowEMA, fastEMA ) , HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

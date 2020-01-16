@@ -62,7 +62,7 @@ public class WatchedStockService {
 
     public WatchedStock stopWatchingStock(String stockName) {
         StockSymbol stockSymbol = stockSymbolRepository.findBySymbol(stockName);
-        WatchedStock watchedStock = repository.findByStockSymbolId(stockSymbol.getId());
+        WatchedStock watchedStock = repository.findByStockSymbolIdAndEndWatchNull(stockSymbol.getId());
         watchedStock.setEndWatch(LocalDate.now());
         return repository.save(watchedStock);
 	}
@@ -76,12 +76,12 @@ public class WatchedStockService {
         repository.delete(watchedStock);
     }
 
-    public MainIndicator analyzeWatchedStock(Integer id){
+    public MainIndicator analyzeWatchedStock(Integer id, Integer slowEMA, Integer fastEMA){
 
         try{
           StockSymbol stockSymbol = getStockSymbolById(id);
           ArrayList<StockIndicator> dailyStock = getRecentStockValues(stockSymbol.getSymbol());
-          dailyStock = populateRawIndicatorData(dailyStock);
+          dailyStock = populateRawIndicatorData(dailyStock, slowEMA, fastEMA);
           MainIndicator indicator = getCurentIndicator(dailyStock);
 
           return indicator;
@@ -92,18 +92,25 @@ public class WatchedStockService {
         }
     }
 
-    public ArrayList<StockIndicator> populateRawIndicatorData(ArrayList<StockIndicator> dailyStock){
+    public ArrayList<StockIndicator> populateRawIndicatorData(ArrayList<StockIndicator> dailyStock,
+                                                            Integer slowEMA,
+                                                            Integer fastEMA){
         List<StockIndicator> dailyIndicators = populateTrendLines(dailyStock);
-        dailyIndicators = populateMACD(dailyIndicators);
+        dailyIndicators = populateMACD(dailyIndicators, slowEMA, fastEMA);
 
         // dailyIndicators.forEach((x) -> System.out.println(x));
         return (ArrayList<StockIndicator>) dailyIndicators;
     }
 
-    private List<StockIndicator> populateMACD(List<StockIndicator> dailyIndicators){
-        // TODO: Change fast and slowto variables, get from paramter
-        dailyIndicators = Formulas.populateExponentialMovingAverage(5, dailyIndicators, true);
-        dailyIndicators = Formulas.populateExponentialMovingAverage(10, dailyIndicators, false); 
+    private List<StockIndicator> populateMACD(List<StockIndicator> dailyIndicators, Integer slowEMA, Integer fastEMA){
+        if(slowEMA==null){
+            slowEMA=10;
+        }
+        if(fastEMA==null){
+            fastEMA=5;
+        }
+        dailyIndicators = Formulas.populateExponentialMovingAverage(fastEMA, dailyIndicators, true);
+        dailyIndicators = Formulas.populateExponentialMovingAverage(slowEMA, dailyIndicators, false); 
         dailyIndicators = Formulas.populateMACD(dailyIndicators);         
 
         return dailyIndicators;
