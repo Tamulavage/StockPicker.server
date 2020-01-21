@@ -14,7 +14,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -28,7 +27,6 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 
@@ -132,12 +130,6 @@ public class WatchedStockServiceTest {
         // Given
         MainIndicator expected = new MainIndicator();
         expected.setSuggest(Suggestion.SELL);
-
-        StockSymbol dummyStockSymbol = new StockSymbol(stockID, "AAA");
-        Optional<StockSymbol> stockSymbol = Optional.of(dummyStockSymbol);
-        BDDMockito
-        .given(symbolRepository.findById(stockID))
-        .willReturn(stockSymbol);
 
         String mockedReturn = "{\"Time Series (Daily)\": { "
                                 + "\"2019-10-05\": {"
@@ -289,7 +281,7 @@ public class WatchedStockServiceTest {
              .thenReturn(response);
 
         // When
-        MainIndicator actual = watchedStockService.analyzeWatchedStock(stockID, slowEMA, fastEMA);
+        MainIndicator actual = watchedStockService.analyzeWatchedStock("AAA", slowEMA, fastEMA);
 
         // Then
         Assert.assertEquals(expected.getSuggest(), actual.getSuggest());
@@ -300,12 +292,6 @@ public class WatchedStockServiceTest {
         // Given
         MainIndicator expected = new MainIndicator();
         expected.setSuggest(Suggestion.BUY);
-
-        StockSymbol dummyStockSymbol = new StockSymbol(stockID, "AAA");
-        Optional<StockSymbol> stockSymbol = Optional.of(dummyStockSymbol);
-        BDDMockito
-        .given(symbolRepository.findById(stockID))
-        .willReturn(stockSymbol);
 
         String mockedReturn = "{\"Time Series (Daily)\": { "
                                 + "\"2019-10-05\": {"
@@ -457,7 +443,7 @@ public class WatchedStockServiceTest {
              .thenReturn(response);
 
         // When
-        MainIndicator actual = watchedStockService.analyzeWatchedStock(stockID, slowEMA, fastEMA);
+        MainIndicator actual = watchedStockService.analyzeWatchedStock("AAA", slowEMA, fastEMA);
 
         // Then
         Assert.assertEquals(expected.getSuggest(), actual.getSuggest());

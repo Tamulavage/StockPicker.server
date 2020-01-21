@@ -76,11 +76,10 @@ public class WatchedStockService {
         repository.delete(watchedStock);
     }
 
-    public MainIndicator analyzeWatchedStock(Integer id, Integer slowEMA, Integer fastEMA){
+    public MainIndicator analyzeWatchedStock(String stockSymbol, Integer slowEMA, Integer fastEMA){
 
         try{
-          StockSymbol stockSymbol = getStockSymbolById(id);
-          ArrayList<StockIndicator> dailyStock = getRecentStockValues(stockSymbol.getSymbol());
+          ArrayList<StockIndicator> dailyStock = getRecentStockValues(stockSymbol);
           dailyStock = populateRawIndicatorData(dailyStock, slowEMA, fastEMA);
           MainIndicator indicator = getCurentIndicator(dailyStock);
 
@@ -90,7 +89,7 @@ public class WatchedStockService {
             System.err.println(e.getMessage());
             return null;
         }
-    }
+    }    
 
     public ArrayList<StockIndicator> populateRawIndicatorData(ArrayList<StockIndicator> dailyStock,
                                                             Integer slowEMA,

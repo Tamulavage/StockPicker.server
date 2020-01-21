@@ -49,9 +49,17 @@ public class WatchedStockController {
         return null;
     }
 
-    @GetMapping("/analyzeWatchedStock/{id}")
-    public ResponseEntity<MainIndicator> analyzeWatchedStocks(@PathVariable Integer id, Integer slowEMA, Integer fastEMA ) {
-        return new ResponseEntity<>(watchedStockService.analyzeWatchedStock(id, slowEMA, fastEMA ) , HttpStatus.OK);
+    @GetMapping("/analyzeWatchedStock/")
+    public ResponseEntity<MainIndicator> analyzeWatchedStocks(String symbol, Integer slowEMA, Integer fastEMA ) {
+        try{
+            System.out.println("Method analyzeWatchedStocks started with symbol "+ symbol);
+            return new ResponseEntity<>(watchedStockService.analyzeWatchedStock(symbol, slowEMA, fastEMA ) , HttpStatus.OK);
+        }
+        catch(Exception e){
+            e.getMessage();
+            e.printStackTrace();
+            return new ResponseEntity<>(null , HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}")
