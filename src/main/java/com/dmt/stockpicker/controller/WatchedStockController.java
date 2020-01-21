@@ -25,7 +25,15 @@ public class WatchedStockController {
 
     @PostMapping("/new")
     public ResponseEntity<WatchedStock> addWatchedStock(@RequestBody WatchedStock watchedStock) {
-        return new ResponseEntity<>(watchedStockService.watchNewStock(watchedStock), HttpStatus.CREATED);
+        try{
+            return new ResponseEntity<>(watchedStockService.watchNewStock(watchedStock), HttpStatus.CREATED);
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @GetMapping("/")
@@ -56,6 +64,13 @@ public class WatchedStockController {
 
     @PostMapping("/end/{name}")
     public ResponseEntity<WatchedStock> updateEndDate(@PathVariable String name) {
-        return new ResponseEntity<>(watchedStockService.stopWatchingStock(name), HttpStatus.OK);
+        try{
+            return new ResponseEntity<>(watchedStockService.stopWatchingStock(name), HttpStatus.OK);
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
