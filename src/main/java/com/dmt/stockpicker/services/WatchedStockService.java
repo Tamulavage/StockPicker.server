@@ -23,7 +23,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -35,45 +34,54 @@ public class WatchedStockService {
     final BigDecimal three = new BigDecimal("2");
 
     @Autowired
-    private WatchedStockRepository repository;
+    private WatchedStockRepository watchedStockRepository;
     @Autowired
     private StockSymbolRepository stockSymbolRepository;
 
     @Autowired
     private RestTemplate restTemplate; 
 
-    public WatchedStock watchNewStock(WatchedStock watchedStock) {
+    public WatchedStock watchNewStock(WatchedStock watchedStock) throws Exception {
         StockSymbol stockSymbol = watchedStock.getStockSymbol();
         watchedStock.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
         if(watchedStock.getStockSymbol()==null){
             watchedStock.setStockSymbol(stockSymbolRepository.save(stockSymbol));
         }
-        return repository.save(watchedStock);
+        if(isWatched(watchedStock)){
+            System.out.println("Stock already has been watched");
+            throw new Exception("Stock has been watch, need to end watch first");
+        }
+        return watchedStockRepository.save(watchedStock);
     }
 
+    private Boolean isWatched(WatchedStock watchedStock){
+        return watchedStockRepository.findByStockSymbolIdAndEndWatchNull(watchedStock.getStockSymbol().getId())!=null;
+    }
+
+
     public WatchedStock stopWatchingStock(Integer id) {
-        WatchedStock watchedStock = repository.getOne(id);
+        WatchedStock watchedStock = watchedStockRepository.getOne(id);
         if(watchedStock == null){
             throw new IllegalArgumentException("Stock was not watched");
         }
         watchedStock.setEndWatch(LocalDate.now());
-        return repository.save(watchedStock);
+        return watchedStockRepository.save(watchedStock);
     }
 
     public WatchedStock stopWatchingStock(String stockName) {
         StockSymbol stockSymbol = stockSymbolRepository.findBySymbol(stockName);
-        WatchedStock watchedStock = repository.findByStockSymbolIdAndEndWatchNull(stockSymbol.getId());
+        WatchedStock watchedStock = watchedStockRepository.findByStockSymbolIdAndEndWatchNull(stockSymbol.getId());
         watchedStock.setEndWatch(LocalDate.now());
-        return repository.save(watchedStock);
+        return watchedStockRepository.save(watchedStock);
 	}
 
     public List<WatchedStock> getWatchedStocks() {
-        return repository.findByEndWatch(null);
+        return watchedStockRepository.findByEndWatch(null);
     }
 
     public void deleteWatchedStocks(Integer id) {
-        WatchedStock watchedStock = repository.getOne(id);
-        repository.delete(watchedStock);
+        WatchedStock watchedStock = watchedStockRepository.getOne(id);
+        watchedStockRepository.delete(watchedStock);
     }
 
     public MainIndicator analyzeWatchedStock(String stockSymbol, Integer slowEMA, Integer fastEMA){
@@ -173,17 +181,6 @@ public class WatchedStockService {
         return dailyStock;
     }
 
-
-    private StockSymbol getStockSymbolById(Integer id) throws Exception{
-
-        Optional<StockSymbol> stockSymbol =  stockSymbolRepository.findById(id);
-        if(stockSymbol.isPresent()){
-         return stockSymbol.get();
-        }
-        else{
-            throw new Exception("Not valid Stock id");
-        }
-    }
 
     public ArrayList<StockIndicator>  getRecentStockValues(String stockName){        
         

@@ -60,7 +60,7 @@ public class WatchedStockServiceTest {
     }
 
     @Test
-    public void testAddWatchStock() {
+    public void testAddWatchStock() throws Exception {
         String symbol = "test";
         StockSymbol stockSymbol = new StockSymbol(1, symbol);
         WatchedStock watchedStock = new WatchedStock(null, null, stockSymbol);
@@ -622,5 +622,4 @@ public class WatchedStockServiceTest {
             this.dailyStock.add( dailyStockData[i]);
         }            
     }    
-
 }
