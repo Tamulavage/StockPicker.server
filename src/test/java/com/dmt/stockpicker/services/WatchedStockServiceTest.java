@@ -126,7 +126,7 @@ public class WatchedStockServiceTest {
 
     
     @Test
-    public void analyzeWatchedStockTestSell() {
+    public void analyzeWatchedStockTestSell() throws Exception {
         // Given
         MainIndicator expected = new MainIndicator();
         expected.setSuggest(Suggestion.SELL);
@@ -288,7 +288,7 @@ public class WatchedStockServiceTest {
     }
 
     @Test
-    public void analyzeWatchedStockTestBuy() {
+    public void analyzeWatchedStockTestBuy() throws Exception {
         // Given
         MainIndicator expected = new MainIndicator();
         expected.setSuggest(Suggestion.BUY);

@@ -45,6 +45,7 @@ public class WatchedStockService {
         StockSymbol stockSymbol = watchedStock.getStockSymbol();
         watchedStock.setStockSymbol(stockSymbolRepository.findBySymbol(stockSymbol.getSymbol()));
         if(watchedStock.getStockSymbol()==null){
+            stockSymbol.setSymbol(stockSymbol.getSymbol().toUpperCase().trim());
             watchedStock.setStockSymbol(stockSymbolRepository.save(stockSymbol));
         }
         if(isWatched(watchedStock)){
@@ -84,7 +85,7 @@ public class WatchedStockService {
         watchedStockRepository.delete(watchedStock);
     }
 
-    public MainIndicator analyzeWatchedStock(String stockSymbol, Integer slowEMA, Integer fastEMA){
+    public MainIndicator analyzeWatchedStock(String stockSymbol, Integer slowEMA, Integer fastEMA) throws Exception {
 
         try{
           ArrayList<StockIndicator> dailyStock = getRecentStockValues(stockSymbol);
@@ -94,8 +95,8 @@ public class WatchedStockService {
           return indicator;
         }
         catch(Exception e){
-            System.err.println(e.getMessage());
-            return null;
+            // System.err.println(e.getMessage());
+            throw new Exception(e);
         }
     }    
 
@@ -127,6 +128,10 @@ public class WatchedStockService {
         
         // TODO: Run indicator here:
         MainIndicator indicator = new MainIndicator();
+        indicator.setFastEMA(dailyStock.get(0).getIndicator().getEmaShort());
+        indicator.setSlowEMA(dailyStock.get(0).getIndicator().getEmaLong());
+        indicator.setMacd(dailyStock.get(0).getIndicator().getMACD());
+
         if(dailyStock.get(0).getIndicator().getMACD().compareTo(zero)>0)
             indicator.setSuggest(Suggestion.BUY);
         else if(dailyStock.get(0).getIndicator().getMACD().compareTo(zero)<0)
