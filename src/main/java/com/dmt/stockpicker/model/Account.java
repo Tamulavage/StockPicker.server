@@ -18,7 +18,6 @@ public class Account {
 
     // @Column(name = "user_id")
     // private Integer userId;
-
     @OneToOne(cascade = PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name= "user_id")
     private UserProfile userProfile;
